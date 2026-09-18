@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR-песочница</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+  :root {
+    --bg: #0f1317;
+    --bg-2: #151b21;
+    --card: #1a2129;
+    --card-2: #202932;
+    --line: #2a3440;
+    --line-strong: #37434f;
+    --text: #e9eef2;
+    --muted: #97a3ae;
+    --sensor: #37b7c8;
+    --proj: #f0a64a;
+    --e0: #1f4e9c; --e1: #2b8fc9; --e2: #3bb27a; --e3: #d9c74a; --e4: #e6862e; --e5: #c8402d;
+    --shadow: 0 24px 60px rgba(0,0,0,.45);
+    --radius: 16px;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f2f0eb; --bg-2: #e9e6df; --card: #ffffff; --card-2: #f5f3ee;
+      --line: #dcd7cd; --line-strong: #c9c2b5; --text: #1d232a; --muted: #5d6771;
+      --sensor: #1a8c9c; --proj: #c77a1d;
+      --e0: #1c4a94; --e1: #2383bd; --e2: #2f9d69; --e3: #c2ad2b; --e4: #d6771f; --e5: #b53625;
+      --shadow: 0 20px 50px rgba(40,35,25,.14);
+      color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f2f0eb; --bg-2: #e9e6df; --card: #ffffff; --card-2: #f5f3ee;
+    --line: #dcd7cd; --line-strong: #c9c2b5; --text: #1d232a; --muted: #5d6771;
+    --sensor: #1a8c9c; --proj: #c77a1d;
+    --e0: #1c4a94; --e1: #2383bd; --e2: #2f9d69; --e3: #c2ad2b; --e4: #d6771f; --e5: #b53625;
+    --shadow: 0 20px 50px rgba(40,35,25,.14);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 18px; line-height: 1.7;
+  }
+  h1, h2, h3 { font-family: "Manrope", "Golos Text", sans-serif; letter-spacing: -0.015em; text-wrap: balance; margin: 0; }
+  h1 { font-weight: 800; font-size: clamp(2.1rem, 5vw, 3.6rem); line-height: 1.1; }
+  h2 { font-weight: 700; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.2; margin-bottom: .7rem; }
+  h3 { font-weight: 700; font-size: 1.12rem; margin-bottom: .4rem; }
+  p { margin: 0 0 1rem; }
+  a { color: inherit; }
+
+  .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
+  section { padding: clamp(2.2rem, 5vw, 4rem) 0; border-top: 1px solid var(--line); }
+  section:first-of-type { border-top: 0; }
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: .8rem; }
+  .lead { color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  nav.top .wrap { display: flex; align-items: center; gap: 1rem; padding: .7rem 0; overflow-x: auto; }
+  nav.top .brand { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1rem; white-space: nowrap; margin-right: .5rem; }
+  nav.top .brand i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .5rem; vertical-align: -1px;
+    background: linear-gradient(135deg, var(--e0), var(--e2) 45%, var(--e5)); }
+  nav.top a { font-size: .86rem; color: var(--muted); text-decoration: none; white-space: nowrap; padding: .25rem .1rem; }
+  nav.top a:hover { color: var(--text); }
+
+  .hero { padding-top: clamp(2.5rem, 6vw, 4.5rem); }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 2rem; align-items: center; }
+  @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } }
+  .ramp { height: 10px; border-radius: 999px; margin: 1.2rem 0 .4rem;
+    background: linear-gradient(90deg, var(--e0), var(--e1) 25%, var(--e2) 45%, var(--e3) 65%, var(--e4) 82%, var(--e5)); }
+  .ramp-labels { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .demo { padding: 1rem; }
+  .demo canvas { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 10px; background: #000; cursor: crosshair; touch-action: none; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: .8rem; }
+  .btn {
+    appearance: none; border: 1px solid var(--line-strong); background: var(--card-2); color: var(--text);
+    font: 600 .86rem "Golos Text", sans-serif; padding: .5rem .85rem; border-radius: 10px; cursor: pointer;
+    transition: border-color .15s, background-color .15s, transform .15s;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--text); }
+  .btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--sensor) 50%, transparent); outline-offset: 2px; }
+  .btn[aria-pressed="true"] { background: color-mix(in srgb, var(--sensor) 22%, var(--card)); border-color: var(--sensor); }
+  .btn.warm[aria-pressed="true"] { background: color-mix(in srgb, var(--proj) 22%, var(--card)); border-color: var(--proj); }
+  .hint { font-size: .82rem; color: var(--muted); margin-left: auto; }
+  .range { display: inline-flex; align-items: center; gap: .5rem; font-size: .86rem; font-weight: 600; color: var(--muted); }
+  .range input { width: 110px; accent-color: var(--proj); }
+  .range span { font-family: "JetBrains Mono", monospace; font-size: .8rem; min-width: 1.4em; color: var(--text); }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  @media (max-width: 880px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .tile .k { font-family: "JetBrains Mono", monospace; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; }
+  .tile.sensor { border-top: 3px solid var(--sensor); }
+  .tile.pc { border-top: 3px solid var(--e2); }
+  .tile.proj { border-top: 3px solid var(--proj); }
+  .tile ul { margin: .4rem 0 0; padding-left: 1.1rem; }
+  .tile li { margin: .2rem 0; }
+  .spec { font-size: .95rem; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.6; }
+  .lead { font-size: 1.12rem; line-height: 1.65; }
+  .tile p, .tile li { font-size: 1rem; }
+  table { font-size: .97rem; }
+  td { line-height: 1.55; }
+
+  .flow { display: flex; align-items: stretch; gap: .6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .flow .step { flex: 1 1 150px; background: var(--card-2); border: 1px solid var(--line); border-radius: 12px; padding: .8rem .9rem; font-size: .9rem; }
+  .flow .step b { display: block; font-family: "JetBrains Mono", monospace; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .25rem; }
+
+  .model { padding: 1rem; }
+  .model .stage { position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden; background: var(--bg-2); }
+  .model canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  .model canvas:active { cursor: grabbing; }
+  .legend { position: absolute; left: .8rem; bottom: .8rem; display: grid; gap: .3rem; font-size: .78rem;
+    background: color-mix(in srgb, var(--card) 82%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: .55rem .7rem; backdrop-filter: blur(6px); }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: .45rem; vertical-align: -1px; }
+  .dims { position: absolute; right: .8rem; top: .8rem; font-family: "JetBrains Mono", monospace; font-size: .74rem; color: var(--muted);
+    background: color-mix(in srgb, var(--card) 82%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: .5rem .65rem; line-height: 1.5; }
+  .toggles { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; margin-top: .8rem; font-size: .88rem; }
+  .toggles label { display: inline-flex; align-items: center; gap: .45rem; cursor: pointer; }
+  .toggles input { accent-color: var(--sensor); width: 16px; height: 16px; }
+  .fsbtn { position: absolute; right: .8rem; top: .8rem; z-index: 2; }
+  .toolbar.overlay { position: absolute; left: .8rem; right: .8rem; bottom: .8rem; margin: 0; padding: .5rem .6rem; z-index: 2;
+    background: color-mix(in srgb, var(--card) 84%, transparent); border: 1px solid var(--line); border-radius: 12px; backdrop-filter: blur(8px); }
+  .toolbar.overlay .range { color: var(--text); }
+  #heroStage { aspect-ratio: 16 / 10; }
+  #heroStage .dims { max-width: 46%; }
+  @media (max-width: 720px) { #heroStage { aspect-ratio: 4 / 5; } #heroStage .dims { display: none; } .toolbar.overlay { gap: .35rem; } .toolbar.overlay .btn { padding: .42rem .6rem; font-size: .8rem; } }
+  .stage.fs { position: fixed; inset: 0; z-index: 999; aspect-ratio: auto; border-radius: 0; }
+  .stage:fullscreen { border-radius: 0; }
+
+  .diagram .ico { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .diagram .ico.sensor { color: var(--sensor); }
+  .diagram .ico.pc { color: var(--e2); }
+  .diagram .ico.proj { color: var(--proj); }
+  .diagram .ico.pwr { color: var(--e3); }
+  .diagram text.t { font-weight: 600; font-size: 15px; }
+  .diagram text.lbl { fill: var(--muted); font-size: 12px; font-family: "JetBrains Mono", monospace; paint-order: stroke; stroke: var(--card); stroke-width: 6px; stroke-linejoin: round; }
+
+  .diagram { padding: 1rem; overflow-x: auto; }
+  .diagram svg { width: 100%; min-width: 640px; height: auto; display: block; font-family: "Golos Text", sans-serif; }
+  .diagram .box { fill: var(--card-2); stroke: var(--line-strong); stroke-width: 1.5; }
+  .diagram .box.sensor { stroke: var(--sensor); }
+  .diagram .box.pc { stroke: var(--e2); }
+  .diagram .box.proj { stroke: var(--proj); }
+  .diagram .box.pwr { stroke: var(--e3); }
+  .diagram text { fill: var(--text); font-size: 14px; }
+  .diagram text.small { fill: var(--muted); font-size: 12px; font-family: "JetBrains Mono", monospace; }
+  .diagram .wire { fill: none; stroke: var(--muted); stroke-width: 2; }
+  .diagram .wire.usb { stroke: var(--sensor); }
+  .diagram .wire.hdmi { stroke: var(--proj); }
+  .diagram .wire.pwr { stroke: var(--e3); stroke-dasharray: 5 4; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: "JetBrains Mono", monospace; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+
+  .formula { font-family: "JetBrains Mono", monospace; background: var(--card-2); border: 1px solid var(--line); border-radius: 10px; padding: .7rem .9rem; font-size: .9rem; margin: .5rem 0 .9rem; overflow-x: auto; }
+
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: grid; gap: .7rem; }
+  ol.steps li { counter-increment: s; display: grid; grid-template-columns: 52px 1fr; gap: .8rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; }
+  ol.steps li::before { content: counter(s, decimal-leading-zero); font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--muted); line-height: 1; padding-top: .15rem; }
+  ol.steps li { font-size: 1rem; line-height: 1.6; }
+  ol.steps li b { display: block; margin-bottom: .2rem; }
+  ol.steps li .chk { display: block; margin-top: .35rem; font-size: .84rem; color: var(--muted); }
+  ol.steps li .chk::before { content: "контроль: "; font-family: "JetBrains Mono", monospace; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+
+  .note { border-left: 3px solid var(--proj); background: color-mix(in srgb, var(--proj) 10%, var(--card)); border-radius: 10px; padding: .8rem 1rem; font-size: .93rem; }
+  footer { padding: 2rem 0 3rem; color: var(--muted); font-size: .84rem; border-top: 1px solid var(--line); }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+
+<nav class="top"><div class="wrap">
+  <span class="brand"><i></i>AR-песочница</span>
+  <a href="#principle">Принцип</a><a href="#demo">Демо</a><a href="#model">3D-модель</a><a href="#wiring">Подключение</a>
+  <a href="#parts">Компоненты</a><a href="#geometry">Геометрия</a><a href="#software">Софт</a><a href="#build">Сборка</a><a href="#risks">Риски</a><a href="#pitch">Показ</a>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Техническая презентация проекта</div>
+  <h1>Рельеф — из песка. Карта — из света.</h1>
+  <p class="lead">Датчик глубины читает форму песка, компьютер превращает высоту в цвет и горизонтали, проектор возвращает карту на песок. Копаешь долину — она синеет. Насыпаешь гору — краснеет. Всё происходит в реальном времени.</p>
+  <div class="ramp" aria-hidden="true"></div>
+  <div class="ramp-labels"><span>низина · вода</span><span>равнина</span><span>горы · вершины</span></div>
+
+  <div class="card model" id="demo" style="margin-top:1.4rem">
+    <div class="stage" id="heroStage">
+      <canvas id="heroSand" tabindex="0" aria-label="Интерактивная песочница: насыпай и копай песок, карта перекрашивается по высоте. Стрелки — вращение и наклон"></canvas>
+      <button class="btn fsbtn" id="fsBtn0" type="button">На весь экран</button>
+      <div class="dims">песок осыпается под углом ≈ 33°<br>левая кнопка — инструмент<br>правая кнопка / два пальца — вращать<br>колёсико — приблизить</div>
+      <div class="toolbar overlay" id="heroTools">
+        <button class="btn warm" data-tool="pour" aria-pressed="true" type="button">Насыпать</button>
+        <button class="btn" data-tool="dig" aria-pressed="false" type="button">Копать</button>
+        <button class="btn" data-tool="flat" aria-pressed="false" type="button">Разровнять</button>
+        <button class="btn" data-tool="cam" aria-pressed="false" type="button">Камера</button>
+        <label class="range">Кисть <input type="range" id="brushSize" min="2" max="14" value="6" aria-label="Радиус кисти, см"><span id="brushVal">6 см</span></label>
+        <button class="btn warm" id="projBtn" aria-pressed="true" type="button">Проекция</button>
+        <button class="btn" id="linesBtn" aria-pressed="true" type="button">Горизонтали</button>
+        <button class="btn" id="spinBtn" aria-pressed="false" type="button">Автоповорот</button>
+        <button class="btn" id="resetBtn" type="button">Новый песок</button>
+        <label class="range">Поворот <input type="range" id="rotRange" min="0" max="360" value="32" aria-label="Поворот сцены, градусы"><span id="rotVal">32°</span></label>
+        <label class="range">Наклон <input type="range" id="tiltRange" min="15" max="85" value="53" aria-label="Наклон камеры, градусы"><span id="tiltVal">53°</span></label>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="principle"><div class="wrap">
+  <div class="eyebrow">Принцип работы</div>
+  <h2>Три устройства, один замкнутый цикл</h2>
+  <p class="lead">Установка не «показывает видео» — она измеряет реальный песок и пересчитывает картинку десятки раз в секунду.</p>
+  <div class="grid-3">
+    <div class="tile sensor"><div class="k">01 · Датчик глубины</div>
+      <p>Висит над центром ящика, смотрит строго вниз. Излучает инфракрасный паттерн (или измеряет время пролёта) и получает карту расстояний до каждой точки песка.</p>
+      <ul><li class="spec">30 кадров/с</li><li class="spec">точность по высоте ≈ 2–5 мм на рабочей дистанции</li></ul>
+    </div>
+    <div class="tile pc"><div class="k">02 · Компьютер</div>
+      <p>Фильтрует шум и руки, вычитает опорную плоскость дна, получает карту высот. Каждой высоте назначает цвет шкалы и рисует горизонтали. При желании считает воду.</p>
+      <ul><li class="spec">задержка цикла ≈ 60–120 мс</li><li class="spec">расчёт на видеокарте</li></ul>
+    </div>
+    <div class="tile proj"><div class="k">03 · Проектор</div>
+      <p>Закреплён рядом с датчиком, светит на ту же область. Изображение откалибровано так, что каждая точка карты попадает ровно на «свой» участок песка.</p>
+      <ul><li class="spec">формат 4:3 под ящик 1000×750 мм</li><li class="spec">затемнённое помещение — контраст выше</li></ul>
+    </div>
+  </div>
+  <div class="flow" aria-label="Конвейер обработки">
+    <div class="step"><b>кадр глубины</b>расстояние до песка, мм</div>
+    <div class="step"><b>фильтр</b>среднее по времени, отсечение рук</div>
+    <div class="step"><b>карта высот</b>высота над дном ящика</div>
+    <div class="step"><b>цвет + горизонтали</b>шкала высот, шаг изолиний</div>
+    <div class="step"><b>вода</b>стекает по рельефу (опция)</div>
+    <div class="step"><b>проекция</b>картинка на песок</div>
+  </div>
+</div></section>
+
+<section id="model"><div class="wrap">
+  <div class="eyebrow">Конструкция</div>
+  <h2>Интерактивная 3D-модель установки</h2>
+  <p class="lead">Вращай мышью, приближай колёсиком. Бирюзовые лучи — поле зрения датчика, янтарные — луч проектора. Оба накрывают весь ящик с запасом.</p>
+  <div class="card model">
+    <div class="stage">
+      <canvas id="scene3d" aria-label="3D-модель: ящик с песком, стойка, датчик и проектор"></canvas>
+      <button class="btn fsbtn" id="fsBtn1" type="button">На весь экран</button>
+      <div class="dims">ящик 1000 × 750 мм<br>борт 250 мм · песок 100–150 мм<br>датчик ↑ 1,0–1,3 м над песком<br>верх стойки ≈ 2,0 м от пола</div>
+      <div class="legend">
+        <span><i style="background:#8a6a45"></i>Короб из фанеры на ножках</span>
+        <span><i style="background:linear-gradient(90deg,var(--e0),var(--e2),var(--e5))"></i>Песок, окрашен по высоте</span>
+        <span><i style="background:#6f7a86"></i>Стойка и верхняя балка</span>
+        <span><i style="background:var(--sensor)"></i>Датчик глубины</span>
+        <span><i style="background:var(--proj)"></i>Проектор</span>
+      </div>
+    </div>
+    <div class="toggles">
+      <label><input type="checkbox" id="tSensor" checked> поле зрения датчика</label>
+      <label><input type="checkbox" id="tProj" checked> луч проектора</label>
+      <label><input type="checkbox" id="tLight" checked> свет проекции на песке</label>
+      <label><input type="checkbox" id="tSpin" checked> автоповорот</label>
+    </div>
+  </div>
+</div></section>
+
+<section id="wiring"><div class="wrap">
+  <div class="eyebrow">Подключение</div>
+  <h2>Что куда втыкается</h2>
+  <div class="card diagram">
+    <svg viewBox="0 0 900 520" role="img" aria-label="Схема подключения: датчик глубины через адаптер в USB компьютера, компьютер по HDMI в проектор, питание 220 В через сетевой фильтр на компьютер, проектор и адаптер датчика">
+      <!-- провода -->
+      <path class="wire usb" d="M165 150 V240"/>
+      <path class="wire usb" d="M290 290 H340"/>
+      <path class="wire hdmi" d="M500 210 V95 H610"/>
+      <path class="wire pwr" d="M465 430 V360"/>
+      <path class="wire pwr" d="M340 465 H165 V340"/>
+      <path class="wire pwr" d="M590 465 H735 V150"/>
+
+      <!-- Датчик глубины -->
+      <g transform="translate(40,40)">
+        <rect class="box sensor" width="250" height="110" rx="14"/>
+        <g class="ico sensor" transform="translate(18,26)">
+          <rect x="0" y="8" width="42" height="14" rx="4"/>
+          <circle cx="12" cy="15" r="3"/><circle cx="30" cy="15" r="3"/>
+          <path d="M9 28 L4 44 M21 28 V44 M33 28 L38 44"/>
+        </g>
+        <text class="t" x="78" y="42">Датчик глубины</text>
+        <text class="small" x="78" y="66">Kinect v1 / v2</text>
+        <text class="small" x="78" y="86">над песком, ось вниз</text>
+      </g>
+
+      <!-- Адаптер датчика -->
+      <g transform="translate(40,240)">
+        <rect class="box sensor" width="250" height="100" rx="14"/>
+        <g class="ico sensor" transform="translate(20,24)">
+          <path d="M12 10 V2 M28 10 V2"/>
+          <rect x="4" y="10" width="32" height="22" rx="5"/>
+          <path d="M20 32 V46"/>
+        </g>
+        <text class="t" x="78" y="40">Адаптер датчика</text>
+        <text class="small" x="78" y="64">разъём датчика → USB</text>
+        <text class="small" x="78" y="84">+ питание 12 В от сети</text>
+      </g>
+
+      <!-- Компьютер -->
+      <g transform="translate(340,210)">
+        <rect class="box pc" width="250" height="150" rx="14"/>
+        <g class="ico pc" transform="translate(18,26)">
+          <rect x="0" y="4" width="30" height="20" rx="3"/>
+          <path d="M15 24 V32 M7 32 H23"/>
+          <rect x="36" y="2" width="12" height="32" rx="2"/>
+          <circle cx="42" cy="28" r="1.5"/>
+        </g>
+        <text class="t" x="78" y="42">Компьютер</text>
+        <text class="small" x="78" y="66">дискретная видеокарта</text>
+        <text class="small" x="78" y="86">USB на материнской плате</text>
+        <text class="small" x="78" y="106">выход HDMI</text>
+        <text class="small" x="78" y="126">Windows 10/11 или Linux</text>
+      </g>
+
+      <!-- Проектор -->
+      <g transform="translate(610,40)">
+        <rect class="box proj" width="250" height="110" rx="14"/>
+        <g class="ico proj" transform="translate(16,28)">
+          <rect x="0" y="8" width="40" height="22" rx="7"/>
+          <circle cx="29" cy="19" r="6"/>
+          <path d="M40 14 L54 8 M40 24 L54 30"/>
+        </g>
+        <text class="t" x="78" y="42">Проектор</text>
+        <text class="small" x="78" y="66">над песком, рядом с датчиком</text>
+        <text class="small" x="78" y="86">второй экран, ручной фокус</text>
+      </g>
+
+      <!-- Сетевой фильтр -->
+      <g transform="translate(340,430)">
+        <rect class="box pwr" width="250" height="70" rx="14"/>
+        <g class="ico pwr" transform="translate(18,18)">
+          <rect x="0" y="6" width="46" height="18" rx="5"/>
+          <circle cx="10" cy="15" r="3"/><circle cx="23" cy="15" r="3"/><circle cx="36" cy="15" r="3"/>
+          <path d="M46 15 H54 V30"/>
+        </g>
+        <text class="t" x="82" y="34">Сетевой фильтр</text>
+        <text class="small" x="82" y="54">220 В · один выключатель на всё</text>
+      </g>
+
+      <!-- подписи проводов -->
+      <text class="lbl" x="176" y="200">кабель датчика</text>
+      <text class="lbl" x="315" y="281" text-anchor="middle">USB</text>
+      <text class="lbl" x="555" y="86" text-anchor="middle">HDMI</text>
+      <text class="lbl" x="477" y="400">220 В</text>
+      <text class="lbl" x="252" y="457" text-anchor="middle">питание адаптера</text>
+      <text class="lbl" x="662" y="457" text-anchor="middle">питание проектора</text>
+    </svg>
+  </div>
+  <div class="grid-2" style="margin-top:1rem">
+    <div class="tile"><h3>Правила по кабелям</h3>
+      <ul>
+        <li>Датчик — в порт USB <b>на материнской плате</b>, не через хаб. Kinect v2 требует USB 3.0 и стабильное питание.</li>
+        <li>USB до 3 м. Если стойка выше — активный удлинитель.</li>
+        <li>HDMI до 5–10 м без проблем; проектор работает как <b>второй монитор</b> в режиме «расширить», в родном разрешении.</li>
+        <li>Все три потребителя — через один сетевой фильтр с выключателем: включил — заработало.</li>
+      </ul>
+    </div>
+    <div class="tile"><h3>Что настраивается один раз</h3>
+      <ul>
+        <li>Проектор: ручной фокус, выключенная автокоррекция трапеции (её делает софт).</li>
+        <li>Компьютер: автозапуск программы при включении, отключение спящего режима, показ только на проекторе.</li>
+        <li>Датчик: жёстко закреплён, ось вниз. Любое смещение после калибровки — перекалибровка.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="parts"><div class="wrap">
+  <div class="eyebrow">Компоненты</div>
+  <h2>Состав установки и требования</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Узел</th><th>Что именно</th><th>Ключевые требования</th></tr></thead>
+    <tbody>
+      <tr><td><b>Датчик глубины</b></td><td>Microsoft Kinect v1 (Xbox 360) или Kinect v2 (Xbox One) с адаптером для ПК</td><td class="spec">v1: 640×480, поле 57°×43°, дистанция 0,8–4 м, USB 2.0<br>v2: 512×424 ToF, поле 70°×60°, дистанция 0,5–4,5 м, USB 3.0<br>альтернатива через форки софта: Azure Kinect, Orbbec Femto, Intel RealSense</td></tr>
+      <tr><td><b>Проектор</b></td><td>DLP или LCD, формат 4:3 или 16:10</td><td class="spec">яркость от 3000 лм для обычного зала<br>проекционное отношение ≤ 1,0 (короткофокусный) — или выше стойка<br>разрешение 1024×768 и выше · ручной фокус</td></tr>
+      <tr><td><b>Компьютер</b></td><td>Стационарный ПК или мощный ноутбук</td><td class="spec">дискретная видеокарта NVIDIA / AMD среднего уровня<br>порт USB 3.0, выход HDMI · 8 ГБ ОЗУ<br>Windows 10/11 (Magic Sand) или Linux (SARndbox)</td></tr>
+      <tr><td><b>Короб</b></td><td>Фанера 15–18 мм, внутренний размер 1000×750 мм</td><td class="spec">высота борта 250 мм · углы на шкантах/уголках · стык герметиком<br>ножки или тумба: верх борта ≈ 750–800 мм от пола (удобно детям и взрослым)</td></tr>
+      <tr><td><b>Песок</b></td><td>Мелкий просеянный, сухой (кварцевый / игровой)</td><td class="spec">слой 100–150 мм → объём ≈ 90–110 л<br>светлый песок даёт более яркую проекцию</td></tr>
+      <tr><td><b>Стойка</b></td><td>Вертикальная опора + верхняя балка над центром ящика</td><td class="spec">брус 50×50 / алюминиевый профиль 40×40<br>жёсткость: датчик и проектор не должны качаться<br>площадка с регулировкой наклона проектора</td></tr>
+      <tr><td><b>Мелочи</b></td><td>Кабели, крепёж, сетевой фильтр, калибровочный диск</td><td class="spec">USB-удлинитель активный при длине > 3 м<br>белый плоский диск ⌀ 15–20 см для калибровки проектора</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="geometry"><div class="wrap">
+  <div class="eyebrow">Геометрия размещения</div>
+  <h2>Как посчитать высоту датчика и проектора</h2>
+  <div class="grid-2">
+    <div class="tile sensor"><h3>Датчик</h3>
+      <p>Ось строго вертикально, над центром ящика. Ширина зоны, которую он видит на высоте H:</p>
+      <div class="formula">W = 2 · H · tan(FOV / 2)</div>
+      <p class="spec">Kinect v1 (57°): H = 1,0 м → зона 1,09 × 0,79 м — ящик 1,0 × 0,75 накрыт с запасом.<br>Kinect v2 (70°): H = 0,8 м → зона 1,12 × 0,92 м.</p>
+      <p>Рабочая рекомендация: <b>1,0–1,3 м над поверхностью песка</b>. Ниже — детальнее, но края могут не влезть; выше — грубее по высоте.</p>
+    </div>
+    <div class="tile proj"><h3>Проектор</h3>
+      <p>Дистанция до песка зависит от проекционного отношения (throw ratio) объектива:</p>
+      <div class="formula">D = throw_ratio · W_изображения</div>
+      <p class="spec">Ширина изображения 1,0 м → отношение 0,5 даёт D = 0,5 м; отношение 1,2 даёт D = 1,2 м.</p>
+      <p>Проектор ставится рядом с датчиком со смещением до 30 см; наклон и трапеция компенсируются калибровкой. Изображение делаем чуть шире ящика — края обрезаются программно.</p>
+    </div>
+  </div>
+  <div class="note" style="margin-top:1rem">Итоговая высота стойки: верх борта ≈ 0,75 м + 1,0–1,3 м до датчика ⇒ балка на <b>≈ 1,9–2,1 м от пола</b>. Помещается в стандартный потолок 2,5 м, к потолку крепить не обязательно.</div>
+</div></section>
+
+<section id="software"><div class="wrap">
+  <div class="eyebrow">Программная часть</div>
+  <h2>Два готовых открытых решения</h2>
+  <div class="grid-2">
+    <div class="tile"><div class="k">Вариант А · Magic Sand</div>
+      <p>Приложение на openFrameworks. <b>Windows и macOS</b>, поддержка Kinect v1 и v2, встроенный мастер калибровки, встроенные мини-игры. Проще всего для запуска на обычном ПК.</p>
+      <ul><li>цветовая шкала и горизонтали настраиваются в интерфейсе</li><li>упрощённая вода</li><li>подходит для базовой и средней конфигурации</li></ul>
+    </div>
+    <div class="tile"><div class="k">Вариант Б · SARndbox (UC Davis)</div>
+      <p>Оригинальная разработка проекта. <b>Linux</b>, движок Vrui. Лучшая физика воды и дождя, максимальная точность.</p>
+      <ul><li>вода стекает по рельефу, собирается в озёра, испаряется</li><li>дождь «из руки» над песком</li><li>выше требования к видеокарте и к навыкам настройки</li></ul>
+    </div>
+  </div>
+  <h3 style="margin-top:1.4rem">Калибровка — четыре этапа, делается один раз</h3>
+  <ol class="steps">
+    <li><div><b>Внутренняя калибровка датчика</b>Загружаются заводские параметры объектива, проверяется отсутствие искажений по краям.<span class="chk">плоский лист на песке даёт ровную плоскость на экране</span></div></li>
+    <li><div><b>Опорная плоскость и границы</b>Песок разравнивается, программа запоминает «ноль высоты» и четыре угла ящика.<span class="chk">вне ящика ничего не рисуется</span></div></li>
+    <li><div><b>Связка датчик ↔ проектор</b>Проектор показывает перекрестия, на каждое кладётся белый диск, датчик его видит — так собирается матрица соответствия точек.<span class="chk">горизонталь проходит по реальной кромке насыпи, без сдвига</span></div></li>
+    <li><div><b>Шкала и вода</b>Задаётся диапазон высот под глубину песка, шаг горизонталей, цвета, скорость воды.<span class="chk">дно ящика — синее, максимальная горка — красная</span></div></li>
+  </ol>
+</div></section>
+
+<section id="build"><div class="wrap">
+  <div class="eyebrow">Сборка</div>
+  <h2>Порядок работ</h2>
+  <ol class="steps">
+    <li><div><b>Короб</b>Раскрой фанеры, сборка на уголках и клее, герметик по стыкам, шлифовка кромок. Ножки или тумба под нужную высоту.<span class="chk">внутри 1000×750, борт 250, стоит без люфта</span></div></li>
+    <li><div><b>Стойка</b>Опора за задней стенкой ящика, верхняя балка над центром, площадка под датчик и проектор с регулировкой.<span class="chk">толчок по стойке — картинка не «плывёт»</span></div></li>
+    <li><div><b>Датчик</b>Крепится над центром, ось вниз, высота 1,0–1,3 м над песком. Кабель — по стойке, с запасом.<span class="chk">весь ящик виден в кадре глубины с полями</span></div></li>
+    <li><div><b>Проектор</b>Рядом с датчиком, наклон в центр ящика, ручной фокус по песку, изображение чуть шире ящика.<span class="chk">резкость по всей площади</span></div></li>
+    <li><div><b>Компьютер</b>Драйверы датчика, программа, проектор как второй экран в родном разрешении, автозапуск.<span class="chk">программа видит датчик и выводит на проектор</span></div></li>
+    <li><div><b>Песок</b>Засыпка слоем 100–150 мм, разравнивание правилом.<span class="chk">ровная плоскость до калибровки</span></div></li>
+    <li><div><b>Калибровка</b>Четыре этапа из раздела выше. Сохраняется в файл настроек.<span class="chk">контур насыпи и цвет совпадают с реальным песком</span></div></li>
+    <li><div><b>Доводка и сдача</b>Настройка шкалы под реальную глубину, шаг горизонталей, тест воды, инструкция для персонала: включение одним выключателем.<span class="chk">включение «с нуля» до картинки — без участия настройщика</span></div></li>
+  </ol>
+</div></section>
+
+<section id="risks"><div class="wrap">
+  <div class="eyebrow">Риски и как их закрываем</div>
+  <h2>Что обычно ломает такие установки</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Риск</th><th>Как проявляется</th><th>Решение</th></tr></thead>
+    <tbody>
+      <tr><td>Яркий свет в зале</td><td>Проекция блёклая, цвета не читаются</td><td>Затемнение зоны, проектор от 3000 лм, светлый песок</td></tr>
+      <tr><td>Шум датчика</td><td>Картинка «дрожит», горизонтали мигают</td><td>Усреднение по кадрам в софте, стабильное питание адаптера</td></tr>
+      <tr><td>Руки над песком</td><td>Ладонь красится как гора</td><td>Фильтр по времени: считается только неподвижная поверхность</td></tr>
+      <tr><td>Смещение крепежа</td><td>Карта сдвинута относительно песка</td><td>Жёсткая стойка, контрольная точка, перекалибровка за 10 минут</td></tr>
+      <tr><td>Слабая видеокарта</td><td>Тормозит вода, падает частота кадров</td><td>Дискретная карта; при необходимости отключить воду</td></tr>
+      <tr><td>Пыль на объективах</td><td>Мутная проекция, ошибки глубины</td><td>Датчик и проектор выше зоны пыли, регламент протирки</td></tr>
+      <tr><td>Снятые с производства датчики</td><td>Сложно купить новый Kinect</td><td>Рынок б/у велик; форки софта поддерживают современные датчики</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section id="pitch"><div class="wrap">
+  <div class="eyebrow">Сценарий показа</div>
+  <h2>Как это выглядит для зрителя</h2>
+  <div class="grid-3">
+    <div class="tile"><div class="k">1 · Ровный песок</div><p>Вся площадь зелёная, одна-две горизонтали. Ведущий проводит ладонью — карта не реагирует на руку, только на песок.</p></div>
+    <div class="tile"><div class="k">2 · Долина и гора</div><p>Выкапываем русло — оно синеет, горизонтали сгущаются на склонах. Насыпаем горку — вершина краснеет.</p></div>
+    <div class="tile"><div class="k">3 · Дождь</div><p>Над горой «идёт дождь»: вода стекает по склону, заполняет долину, образует озеро. Прорываем дамбу — озеро уходит.</p></div>
+  </div>
+  <div class="grid-2" style="margin-top:1rem">
+    <div class="tile"><h3>Где применяется</h3>
+      <ul><li>Учебные классы: география, топография, водосборы</li><li>Музеи и научные центры: интерактивный экспонат</li><li>Детские центры и семейные пространства</li><li>Шоурумы и выставки: «магнит» для посетителей</li></ul>
+    </div>
+    <div class="tile"><h3>Что клиент получает в итоге</h3>
+      <ul><li>Готовую установку: короб, стойка, датчик, проектор, компьютер</li><li>Настроенный софт с калибровкой и автозапуском</li><li>Инструкцию для персонала: включение, уход за песком, перекалибровка</li><li>Возможность расширения: игры, режимы, свои палитры</li></ul>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Технические параметры ориентировочные и уточняются при сборке под конкретное помещение и оборудование. В основе — открытые решения AR Sandbox (UC Davis) и Magic Sand.</div></footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var RAMP = [[0, [31,78,156]], [0.25, [43,143,201]], [0.45, [59,178,122]], [0.65, [217,199,74]], [0.82, [230,134,46]], [1, [200,64,45]]];
+  function rampColor(t) {
+    if (t <= 0) return RAMP[0][1]; if (t >= 1) return RAMP[RAMP.length - 1][1];
+    for (var i = 1; i < RAMP.length; i++) {
+      if (t <= RAMP[i][0]) {
+        var a = RAMP[i - 1], b = RAMP[i], k = (t - a[0]) / (b[0] - a[0]);
+        return [a[1][0] + (b[1][0] - a[1][0]) * k, a[1][1] + (b[1][1] - a[1][1]) * k, a[1][2] + (b[1][2] - a[1][2]) * k];
+      }
+    }
+    return RAMP[RAMP.length - 1][1];
+  }
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // 2D демо
+  (function demo2d() {
+    var cv = document.getElementById("sand2d"); if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var W = 160, H = 120, SC = 2;
+    var h = new Float32Array(W * H), w = new Float32Array(W * H), dw = new Float32Array(W * H);
+    var img = ctx.createImageData(W * SC, H * SC);
+    var mode = "dig", drawing = false, rain = 0, px = -1, py = -1;
+    var HMAX = 140, STEP = 10, brushR = 7;
+
+    function initTerrain() {
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var v = 62 + 30 * Math.sin(x / 19) * Math.cos(y / 15) + 18 * Math.sin((x + y) / 27) + 10 * Math.cos(x / 7 + y / 11);
+        h[y * W + x] = Math.max(6, Math.min(HMAX, v));
+        w[y * W + x] = 0;
+      }
+    }
+    function brush(gx, gy) {
+      var R = brushR, s = (mode === "dig" ? -2.6 : 2.6) * Math.min(1.4, 7 / R + 0.5);
+      for (var y = Math.max(0, gy - R); y <= Math.min(H - 1, gy + R); y++)
+        for (var x = Math.max(0, gx - R); x <= Math.min(W - 1, gx + R); x++) {
+          var d2 = (x - gx) * (x - gx) + (y - gy) * (y - gy); if (d2 > R * R) continue;
+          var f = 1 - Math.sqrt(d2) / R, i = y * W + x;
+          h[i] = Math.max(0, Math.min(HMAX, h[i] + s * f * f));
+        }
+    }
+    function flow() {
+      dw.fill(0);
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var i = y * W + x, wi = w[i]; if (wi < 0.05) continue;
+        var t = h[i] + wi, out = 0;
+        var nb = [x > 0 ? i - 1 : -1, x < W - 1 ? i + 1 : -1, y > 0 ? i - W : -1, y < H - 1 ? i + W : -1];
+        for (var k = 0; k < 4; k++) {
+          var j = nb[k]; if (j < 0) continue;
+          var d = t - (h[j] + w[j]); if (d <= 0) continue;
+          var m = Math.min(wi * 0.25, d * 0.25); dw[j] += m; out += m;
+        }
+        dw[i] -= out;
+      }
+      for (var n = 0; n < W * H; n++) { w[n] = Math.max(0, (w[n] + dw[n]) * 0.996); if (w[n] < 0.02) w[n] = 0; }
+    }
+    function render() {
+      var d = img.data;
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var i = y * W + x, hv = h[i], t = hv / HMAX;
+        var c = rampColor(t);
+        var band = Math.floor(hv / STEP);
+        var edge = (x < W - 1 && Math.floor(h[i + 1] / STEP) !== band) || (y < H - 1 && Math.floor(h[i + W] / STEP) !== band);
+        var r = c[0], g = c[1], b = c[2];
+        if (edge) { r *= 0.55; g *= 0.55; b *= 0.55; }
+        if (w[i] > 0.4) { var a = Math.min(0.85, w[i] / 10); r = r * (1 - a) + 40 * a; g = g * (1 - a) + 110 * a; b = b * (1 - a) + 210 * a; }
+        for (var sy = 0; sy < SC; sy++) for (var sx = 0; sx < SC; sx++) {
+          var p = (((y * SC + sy) * W * SC) + (x * SC + sx)) * 4;
+          d[p] = r; d[p + 1] = g; d[p + 2] = b; d[p + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+    function loop() {
+      if (drawing && px >= 0) brush(px, py);
+      if (rain > 0) { rain--; for (var k = 0; k < 70; k++) { var i = (Math.random() * W * H) | 0; w[i] += 2.2; } }
+      flow(); render(); requestAnimationFrame(loop);
+    }
+    function toGrid(e) {
+      var r = cv.getBoundingClientRect();
+      var cx = e.clientX - r.left, cy = e.clientY - r.top;
+      px = Math.max(0, Math.min(W - 1, (cx / r.width * W) | 0)); py = Math.max(0, Math.min(H - 1, (cy / r.height * H) | 0));
+    }
+    cv.addEventListener("pointerdown", function (e) { drawing = true; toGrid(e); cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener("pointermove", function (e) { if (drawing) toGrid(e); });
+    cv.addEventListener("pointerup", function () { drawing = false; px = -1; });
+    cv.addEventListener("pointercancel", function () { drawing = false; px = -1; });
+    cv.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    var bDig = document.getElementById("modeDig"), bRaise = document.getElementById("modeRaise");
+    bDig.addEventListener("click", function () { mode = "dig"; bDig.setAttribute("aria-pressed", "true"); bRaise.setAttribute("aria-pressed", "false"); });
+    bRaise.addEventListener("click", function () { mode = "raise"; bRaise.setAttribute("aria-pressed", "true"); bDig.setAttribute("aria-pressed", "false"); });
+    document.getElementById("rainBtn").addEventListener("click", function () { rain = 80; });
+    document.getElementById("resetBtn").addEventListener("click", function () { initTerrain(); });
+    var slider = document.getElementById("brushSize"), sliderVal = document.getElementById("brushVal");
+    slider.addEventListener("input", function () { brushR = parseInt(slider.value, 10); sliderVal.textContent = slider.value; });
+    initTerrain(); loop();
+  })();
+
+  // ---------- полный экран для 3D-сцен ----------
+  function bindFullscreen(stage, btn) {
+    if (!stage || !btn) return;
+    function isFs() { return document.fullscreenElement === stage || stage.classList.contains("fs"); }
+    function label() { btn.textContent = isFs() ? "Свернуть" : "На весь экран"; }
+    btn.addEventListener("click", function () {
+      if (isFs()) {
+        if (document.fullscreenElement) { document.exitFullscreen(); } else { stage.classList.remove("fs"); }
+      } else if (stage.requestFullscreen) {
+        stage.requestFullscreen().catch(function () { stage.classList.add("fs"); label(); });
+      } else { stage.classList.add("fs"); }
+      setTimeout(label, 50);
+    });
+    document.addEventListener("fullscreenchange", label);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && stage.classList.contains("fs")) { stage.classList.remove("fs"); label(); } });
+  }
+
+  // ---------- общий шум для рельефа ----------
+  function hash2(x, y) { var n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return n - Math.floor(n); }
+  function vnoise(x, y) {
+    var xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+    var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    var a = hash2(xi, yi), b = hash2(xi + 1, yi), c = hash2(xi, yi + 1), d = hash2(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  }
+  function fbm(x, y, seed) { var s = 0, amp = 0.5, f = 1; for (var i = 0; i < 5; i++) { s += amp * vnoise(x * f + seed, y * f + seed * 1.7); amp *= 0.5; f *= 2.1; } return s; }
+
+  // 3D модель
+  (function model3d() {
+    if (typeof THREE === "undefined") return;
+    var canvas = document.getElementById("scene3d"); if (!canvas) return;
+    var stage = canvas.parentElement;
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    var scene = new THREE.Scene();
+    function bgColor() { return getComputedStyle(document.documentElement).getPropertyValue("--bg-2").trim() || "#151b21"; }
+    scene.background = new THREE.Color(bgColor());
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function () { scene.background = new THREE.Color(bgColor()); });
+
+    var camera = new THREE.PerspectiveCamera(42, 16 / 10, 0.05, 50);
+    var target = new THREE.Vector3(0, 0.95, 0);
+    var orbit = { theta: 0.85, phi: 1.12, r: 3.6, spin: !reduceMotion };
+    function updateCam() {
+      camera.position.set(target.x + orbit.r * Math.sin(orbit.phi) * Math.sin(orbit.theta), target.y + orbit.r * Math.cos(orbit.phi), target.z + orbit.r * Math.sin(orbit.phi) * Math.cos(orbit.theta));
+      camera.lookAt(target);
+    }
+
+    scene.add(new THREE.HemisphereLight(0xcfd8e2, 0x2a2f36, 0.75));
+    var key = new THREE.DirectionalLight(0xffffff, 0.45); key.position.set(2.5, 4, 1.5); key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024); key.shadow.camera.left = -2; key.shadow.camera.right = 2; key.shadow.camera.top = 3; key.shadow.camera.bottom = -1;
+    scene.add(key);
+
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshLambertMaterial({ color: 0x2a3138 }));
+    floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+    var grid = new THREE.GridHelper(8, 16, 0x3a434d, 0x3a434d); grid.position.y = 0.001; scene.add(grid);
+
+    var wood = new THREE.MeshLambertMaterial({ color: 0x8a6a45 });
+    var TOP = 0.78, WALL = 0.25, BOT = TOP - WALL, TH = 0.03;
+    function box(w, hgt, d, x, y, z, mat) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; scene.add(m); return m; }
+    box(1.06, TH, 0.81, 0, BOT - TH / 2, 0, wood);
+    box(1.06, WALL, TH, 0, BOT + WALL / 2, 0.39, wood);
+    box(1.06, WALL, TH, 0, BOT + WALL / 2, -0.39, wood);
+    box(TH, WALL, 0.81, 0.515, BOT + WALL / 2, 0, wood);
+    box(TH, WALL, 0.81, -0.515, BOT + WALL / 2, 0, wood);
+    var legMat = new THREE.MeshLambertMaterial({ color: 0x5c4630 });
+    [[0.48, 0.36], [-0.48, 0.36], [0.48, -0.36], [-0.48, -0.36]].forEach(function (p) { box(0.05, BOT - TH, 0.05, p[0], (BOT - TH) / 2, p[1], legMat); });
+
+    var SX = 80, SZ = 60, sandGeo = new THREE.PlaneGeometry(1.0, 0.75, SX, SZ);
+    sandGeo.rotateX(-Math.PI / 2);
+    var pos = sandGeo.attributes.position, colors = new Float32Array(pos.count * 3);
+    function sandH(x, z) {
+      var v = 0.11 + 0.03 * Math.sin(x * 7.5) * Math.cos(z * 9) + 0.045 * Math.exp(-((x - 0.16) * (x - 0.16) + (z + 0.08) * (z + 0.08)) / 0.03) - 0.05 * Math.exp(-((x + 0.2) * (x + 0.2) + (z - 0.06) * (z - 0.06)) / 0.022);
+      return Math.max(0.03, Math.min(0.19, v));
+    }
+    for (var i = 0; i < pos.count; i++) {
+      var x = pos.getX(i), z = pos.getZ(i), hh = sandH(x, z);
+      pos.setY(i, BOT + hh);
+      var t = (hh - 0.03) / 0.16, band = Math.floor(t * 9) / 9, c = rampColor(band);
+      colors[i * 3] = c[0] / 255; colors[i * 3 + 1] = c[1] / 255; colors[i * 3 + 2] = c[2] / 255;
+    }
+    sandGeo.setAttribute("color", new THREE.BufferAttribute(colors, 3)); sandGeo.computeVertexNormals();
+    var sand = new THREE.Mesh(sandGeo, new THREE.MeshLambertMaterial({ vertexColors: true })); sand.receiveShadow = true; scene.add(sand);
+    var sandTopY = BOT + 0.11;
+
+    var steel = new THREE.MeshLambertMaterial({ color: 0x6f7a86 });
+    var BEAM_Y = 1.98;
+    box(0.06, BEAM_Y, 0.06, 0, BEAM_Y / 2, -0.62, steel);
+    box(0.06, 0.06, 0.72, 0, BEAM_Y - 0.03, -0.26, steel);
+    box(0.5, 0.03, 0.22, 0, BEAM_Y - 0.075, 0, steel);
+    box(0.06, 0.06, 0.3, 0, 0.03, -0.62, steel); box(0.3, 0.06, 0.06, 0, 0.03, -0.62, steel);
+
+    var sensorPos = new THREE.Vector3(0.15, BEAM_Y - 0.125, 0);
+    var projPos = new THREE.Vector3(-0.16, BEAM_Y - 0.14, 0);
+    box(0.26, 0.06, 0.07, sensorPos.x, sensorPos.y, sensorPos.z, new THREE.MeshLambertMaterial({ color: 0x37b7c8 }));
+    var eye = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 16), new THREE.MeshLambertMaterial({ color: 0x0b2b31 })); eye.position.set(sensorPos.x, sensorPos.y - 0.035, sensorPos.z); scene.add(eye);
+    box(0.3, 0.1, 0.24, projPos.x, projPos.y, projPos.z, new THREE.MeshLambertMaterial({ color: 0xf0a64a }));
+    var lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 24), new THREE.MeshLambertMaterial({ color: 0x2b2b2b })); lens.position.set(projPos.x, projPos.y - 0.06, projPos.z + 0.05); scene.add(lens);
+
+    function cone(from, corners, color) {
+      var pts = [];
+      corners.forEach(function (c) { pts.push(from.x, from.y, from.z, c[0], c[1], c[2]); });
+      for (var k = 0; k < corners.length; k++) { var a = corners[k], b = corners[(k + 1) % corners.length]; pts.push(a[0], a[1], a[2], b[0], b[1], b[2]); }
+      var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+      var l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.75 })); scene.add(l); return l;
+    }
+    var sensorCone = cone(new THREE.Vector3(sensorPos.x, sensorPos.y - 0.04, sensorPos.z), [[-0.55, sandTopY, -0.42], [0.55, sandTopY, -0.42], [0.55, sandTopY, 0.42], [-0.55, sandTopY, 0.42]], 0x37b7c8);
+    var projCone = cone(new THREE.Vector3(projPos.x, projPos.y - 0.07, projPos.z + 0.05), [[-0.53, sandTopY, -0.4], [0.53, sandTopY, -0.4], [0.53, sandTopY, 0.4], [-0.53, sandTopY, 0.4]], 0xf0a64a);
+
+    var spot = new THREE.SpotLight(0xffd9a0, 1.6, 4, 0.58, 0.55, 1.2);
+    spot.position.copy(projPos); spot.target.position.set(0, sandTopY, 0); scene.add(spot); scene.add(spot.target);
+
+    var tS = document.getElementById("tSensor"), tP = document.getElementById("tProj"), tL = document.getElementById("tLight"), tSpin = document.getElementById("tSpin");
+    if (reduceMotion) { tSpin.checked = false; }
+    tS.addEventListener("change", function () { sensorCone.visible = tS.checked; });
+    tP.addEventListener("change", function () { projCone.visible = tP.checked; });
+    tL.addEventListener("change", function () { spot.visible = tL.checked; });
+    tSpin.addEventListener("change", function () { orbit.spin = tSpin.checked; });
+
+    var drag = false, lx = 0, ly = 0, pinch = 0;
+    canvas.addEventListener("pointerdown", function (e) { drag = true; lx = e.clientX; ly = e.clientY; orbit.spin = false; tSpin.checked = false; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", function (e) { if (!drag) return; orbit.theta -= (e.clientX - lx) * 0.008; orbit.phi = Math.max(0.35, Math.min(1.45, orbit.phi - (e.clientY - ly) * 0.006)); lx = e.clientX; ly = e.clientY; });
+    canvas.addEventListener("pointerup", function () { drag = false; });
+    canvas.addEventListener("pointercancel", function () { drag = false; });
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); orbit.r = Math.max(1.6, Math.min(7, orbit.r * (1 + e.deltaY * 0.0012))); }, { passive: false });
+    canvas.addEventListener("touchstart", function (e) { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive: true });
+    canvas.addEventListener("touchmove", function (e) { if (e.touches.length === 2 && pinch) { var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); orbit.r = Math.max(1.6, Math.min(7, orbit.r * pinch / d)); pinch = d; } }, { passive: true });
+
+    function resize() {
+      var w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(stage); else window.addEventListener("resize", resize);
+    resize();
+    bindFullscreen(stage, document.getElementById("fsBtn1"));
+
+    function animate() { if (orbit.spin) orbit.theta += 0.0035; updateCam(); renderer.render(scene, camera); requestAnimationFrame(animate); }
+    animate();
+  })();
+
+  // ---------- песочница крупным планом ----------
+  (function sandboxClose() {
+    if (typeof THREE === "undefined") return;
+    var canvas = document.getElementById("sandbox3d"); if (!canvas) return;
+    var stage = document.getElementById("sandStage");
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    var scene = new THREE.Scene();
+    function bgColor() { return getComputedStyle(document.documentElement).getPropertyValue("--bg-2").trim() || "#151b21"; }
+    scene.background = new THREE.Color(bgColor());
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function () { scene.background = new THREE.Color(bgColor()); });
+
+    var camera = new THREE.PerspectiveCamera(38, 16 / 10, 0.05, 30);
+    var target = new THREE.Vector3(0, 0.66, 0);
+    var orbit = { theta: 0.7, phi: 0.95, r: 1.75, spin: !reduceMotion };
+    function updateCam() {
+      camera.position.set(target.x + orbit.r * Math.sin(orbit.phi) * Math.sin(orbit.theta), target.y + orbit.r * Math.cos(orbit.phi), target.z + orbit.r * Math.sin(orbit.phi) * Math.cos(orbit.theta));
+      camera.lookAt(target);
+    }
+
+    // текстура песка: мелкое зерно + редкие тёмные крупинки
+    function grainTexture() {
+      var c = document.createElement("canvas"); c.width = c.height = 512; var g = c.getContext("2d");
+      var id = g.createImageData(512, 512), d = id.data;
+      for (var i = 0; i < 512 * 512; i++) {
+        var n = (Math.random() - 0.5) * 34, base = 232 + n, speck = Math.random() < 0.025 ? -70 : 0;
+        d[i * 4] = base + speck; d[i * 4 + 1] = base - 6 + speck; d[i * 4 + 2] = base - 22 + speck; d[i * 4 + 3] = 255;
+      }
+      g.putImageData(id, 0, 0);
+      var t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(9, 7); t.encoding = THREE.sRGBEncoding; return t;
+    }
+    function woodTexture() {
+      var c = document.createElement("canvas"); c.width = 512; c.height = 128; var g = c.getContext("2d");
+      for (var x = 0; x < 512; x++) {
+        var l = 0.72 + 0.12 * Math.sin(x * 0.11) + 0.06 * Math.sin(x * 0.37 + 1.3) + (Math.random() - 0.5) * 0.05;
+        g.fillStyle = "rgb(" + Math.round(150 * l) + "," + Math.round(112 * l) + "," + Math.round(74 * l) + ")"; g.fillRect(x, 0, 1, 128);
+      }
+      var t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 1); t.encoding = THREE.sRGBEncoding; return t;
+    }
+
+    scene.add(new THREE.HemisphereLight(0xe3e9f0, 0x3a3630, 0.55));
+    var key = new THREE.DirectionalLight(0xfff3e0, 0.9); key.position.set(1.4, 2.6, 0.9); key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -1; key.shadow.camera.right = 1; key.shadow.camera.top = 1; key.shadow.camera.bottom = -1; key.shadow.camera.near = 0.5; key.shadow.camera.far = 6; key.shadow.bias = -0.0005;
+    scene.add(key);
+    var spot = new THREE.SpotLight(0xffe4b8, 1.1, 5, 0.6, 0.6, 1.0); spot.position.set(-0.1, 2.1, 0.05); spot.target.position.set(0, 0.6, 0); scene.add(spot); scene.add(spot.target);
+
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshLambertMaterial({ color: 0x2a3138 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+    var TOP = 0.78, WALL = 0.25, BOT = TOP - WALL, TH = 0.035;
+    var wood = new THREE.MeshStandardMaterial({ map: woodTexture(), roughness: 0.85, metalness: 0 });
+    function slab(w, hgt, d, x, y, z) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), wood); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; scene.add(m); }
+    slab(1.07, TH, 0.82, 0, BOT - TH / 2, 0);
+    slab(1.07, WALL, TH, 0, BOT + WALL / 2, 0.3925); slab(1.07, WALL, TH, 0, BOT + WALL / 2, -0.3925);
+    slab(TH, WALL, 0.82, 0.5175, BOT + WALL / 2, 0); slab(TH, WALL, 0.82, -0.5175, BOT + WALL / 2, 0);
+    [[0.48, 0.36], [-0.48, 0.36], [0.48, -0.36], [-0.48, -0.36]].forEach(function (p) { slab(0.05, BOT - TH, 0.05, p[0], (BOT - TH) / 2, p[1]); });
+
+    var SX = 220, SZ = 165, geo = new THREE.PlaneGeometry(1.0, 0.75, SX, SZ); geo.rotateX(-Math.PI / 2);
+    var pos = geo.attributes.position, colors = new Float32Array(pos.count * 3);
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    var seed = 3.7, hArr = new Float32Array(pos.count);
+    var HMIN = 0.02, HMAX = 0.22;
+    function terrain(x, z) {
+      var v = 0.11 + (fbm(x * 3.2, z * 3.2, seed) - 0.5) * 0.16
+        + 0.06 * Math.exp(-((x - 0.2) * (x - 0.2) + (z + 0.1) * (z + 0.1)) / 0.035)
+        - 0.055 * Math.exp(-((x + 0.22) * (x + 0.22) + (z - 0.06) * (z - 0.06)) / 0.02);
+      return Math.max(HMIN, Math.min(HMAX, v));
+    }
+    function buildHeights() {
+      for (var i = 0; i < pos.count; i++) { var hh = terrain(pos.getX(i), pos.getZ(i)); hArr[i] = hh; pos.setY(i, BOT + hh); }
+      pos.needsUpdate = true; geo.computeVertexNormals();
+    }
+    var showProj = true, showLines = true;
+    function paint() {
+      var col = geo.attributes.color.array;
+      for (var i = 0; i < pos.count; i++) {
+        var t = (hArr[i] - HMIN) / (HMAX - HMIN), r, g, b;
+        if (showProj) {
+          var c = rampColor(Math.floor(t * 10) / 10); r = c[0] / 255; g = c[1] / 255; b = c[2] / 255;
+          var f = t * 10 - Math.floor(t * 10);
+          if (showLines && f < 0.08) { r *= 0.4; g *= 0.4; b *= 0.4; }
+        } else { var s = 0.78 + t * 0.12; r = s; g = s * 0.92; b = s * 0.74; }
+        col[i * 3] = r; col[i * 3 + 1] = g; col[i * 3 + 2] = b;
+      }
+      geo.attributes.color.needsUpdate = true;
+    }
+    var grain = grainTexture();
+    var sandMat = new THREE.MeshStandardMaterial({ map: grain, bumpMap: grain, bumpScale: 0.004, vertexColors: true, roughness: 0.97, metalness: 0 });
+    var sand = new THREE.Mesh(geo, sandMat); sand.castShadow = true; sand.receiveShadow = true; scene.add(sand);
+    buildHeights(); paint();
+
+    var bProj = document.getElementById("sbProj"), bLines = document.getElementById("sbLines"), bSpin = document.getElementById("sbSpin"), bNew = document.getElementById("sbNew");
+    if (reduceMotion) bSpin.setAttribute("aria-pressed", "false");
+    function toggle(btn, fn) { btn.addEventListener("click", function () { var on = btn.getAttribute("aria-pressed") !== "true"; btn.setAttribute("aria-pressed", on ? "true" : "false"); fn(on); }); }
+    toggle(bProj, function (on) { showProj = on; spot.color.set(on ? 0xffe4b8 : 0xf4f1ea); spot.intensity = on ? 1.1 : 0.5; paint(); });
+    toggle(bLines, function (on) { showLines = on; paint(); });
+    toggle(bSpin, function (on) { orbit.spin = on; });
+    bNew.addEventListener("click", function () { seed = Math.random() * 100; buildHeights(); paint(); });
+
+    var drag = false, lx = 0, ly = 0, pinch = 0;
+    canvas.addEventListener("pointerdown", function (e) { drag = true; lx = e.clientX; ly = e.clientY; orbit.spin = false; bSpin.setAttribute("aria-pressed", "false"); canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", function (e) { if (!drag) return; orbit.theta -= (e.clientX - lx) * 0.008; orbit.phi = Math.max(0.25, Math.min(1.5, orbit.phi - (e.clientY - ly) * 0.006)); lx = e.clientX; ly = e.clientY; });
+    canvas.addEventListener("pointerup", function () { drag = false; });
+    canvas.addEventListener("pointercancel", function () { drag = false; });
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); orbit.r = Math.max(0.7, Math.min(4, orbit.r * (1 + e.deltaY * 0.0012))); }, { passive: false });
+    canvas.addEventListener("touchstart", function (e) { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive: true });
+    canvas.addEventListener("touchmove", function (e) { if (e.touches.length === 2 && pinch) { var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); orbit.r = Math.max(0.7, Math.min(4, orbit.r * pinch / d)); pinch = d; } }, { passive: true });
+
+    function resize() { var w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(stage); else window.addEventListener("resize", resize);
+    resize();
+    bindFullscreen(stage, document.getElementById("fsBtn2"));
+
+    function animate() { if (orbit.spin) orbit.theta += 0.003; updateCam(); renderer.render(scene, camera); requestAnimationFrame(animate); }
+    animate();
+  })();
+
+  // ---------- интерактивная песочница с физикой песка (угол откоса) ----------
+  (function heroSandbox() {
+    if (typeof THREE === "undefined") return;
+    var canvas = document.getElementById("heroSand"), stage = document.getElementById("heroStage"); if (!canvas || !stage) return;
+
+    // сетка высот: 200 × 150 ячеек, ячейка ≈ 5 мм
+    var W = 200, H = 150, N = W * H, CELL = 1.0 / (W - 1);
+    var h = new Float32Array(N), dh = new Float32Array(N);
+    var TOP = 0.78, WALL = 0.25, BOT = TOP - WALL, TH = 0.035, WALL_H = WALL - 0.015;
+    var REPOSE = Math.tan(33 * Math.PI / 180) * CELL, REPOSE_D = REPOSE * Math.SQRT2;
+    var HSCALE = 0.20;
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    var scene = new THREE.Scene();
+    function bgColor() { return getComputedStyle(document.documentElement).getPropertyValue("--bg-2").trim() || "#151b21"; }
+    scene.background = new THREE.Color(bgColor());
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function () { scene.background = new THREE.Color(bgColor()); });
+
+    var camera = new THREE.PerspectiveCamera(38, 16 / 10, 0.05, 30);
+    var target = new THREE.Vector3(0, 0.62, 0);
+    var orbit = { theta: 0.55, phi: 0.92, r: 1.55, spin: false };
+    function updateCam() {
+      camera.position.set(target.x + orbit.r * Math.sin(orbit.phi) * Math.sin(orbit.theta), target.y + orbit.r * Math.cos(orbit.phi), target.z + orbit.r * Math.sin(orbit.phi) * Math.cos(orbit.theta));
+      camera.lookAt(target);
+    }
+
+    function grainTexture() {
+      var c = document.createElement("canvas"); c.width = c.height = 512; var g = c.getContext("2d");
+      var id = g.createImageData(512, 512), d = id.data;
+      for (var i = 0; i < 512 * 512; i++) {
+        var n = (Math.random() - 0.5) * 26, base = 246 + n, speck = Math.random() < 0.025 ? -60 : 0;
+        d[i * 4] = base + speck; d[i * 4 + 1] = base - 3 + speck; d[i * 4 + 2] = base - 14 + speck; d[i * 4 + 3] = 255;
+      }
+      g.putImageData(id, 0, 0);
+      var t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(10, 7.5); t.encoding = THREE.sRGBEncoding; return t;
+    }
+    // насыщенная палитра для проекции (контрастнее, чем на схемах)
+    var RAMP_HC = [[0, [16, 48, 170]], [0.22, [20, 140, 225]], [0.42, [40, 190, 90]], [0.62, [245, 215, 25]], [0.8, [245, 130, 20]], [1, [215, 35, 25]]];
+    function rampHC(t) {
+      if (t <= 0) return RAMP_HC[0][1]; if (t >= 1) return RAMP_HC[RAMP_HC.length - 1][1];
+      for (var i = 1; i < RAMP_HC.length; i++) if (t <= RAMP_HC[i][0]) {
+        var a = RAMP_HC[i - 1], b = RAMP_HC[i], k = (t - a[0]) / (b[0] - a[0]);
+        return [a[1][0] + (b[1][0] - a[1][0]) * k, a[1][1] + (b[1][1] - a[1][1]) * k, a[1][2] + (b[1][2] - a[1][2]) * k];
+      }
+      return RAMP_HC[RAMP_HC.length - 1][1];
+    }
+    function woodTexture() {
+      var c = document.createElement("canvas"); c.width = 512; c.height = 128; var g = c.getContext("2d");
+      for (var x = 0; x < 512; x++) {
+        var l = 0.72 + 0.12 * Math.sin(x * 0.11) + 0.06 * Math.sin(x * 0.37 + 1.3) + (Math.random() - 0.5) * 0.05;
+        g.fillStyle = "rgb(" + Math.round(150 * l) + "," + Math.round(112 * l) + "," + Math.round(74 * l) + ")"; g.fillRect(x, 0, 1, 128);
+      }
+      var t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 1); t.encoding = THREE.sRGBEncoding; return t;
+    }
+
+    scene.add(new THREE.HemisphereLight(0xf2f5f8, 0x3a3630, 0.7));
+    var key = new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(1.4, 2.6, 0.9); key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -1; key.shadow.camera.right = 1; key.shadow.camera.top = 1; key.shadow.camera.bottom = -1; key.shadow.camera.near = 0.5; key.shadow.camera.far = 6; key.shadow.bias = -0.0005;
+    scene.add(key);
+    var spot = new THREE.SpotLight(0xffffff, 1.4, 5, 0.62, 0.6, 1.0); spot.position.set(-0.1, 2.1, 0.05); spot.target.position.set(0, 0.6, 0); scene.add(spot); scene.add(spot.target);
+
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshLambertMaterial({ color: 0x2a3138 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+    var wood = new THREE.MeshStandardMaterial({ map: woodTexture(), roughness: 0.85, metalness: 0 });
+    function slab(w, hgt, d, x, y, z) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), wood); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; scene.add(m); }
+    slab(1.07, TH, 0.82, 0, BOT - TH / 2, 0);
+    slab(1.07, WALL, TH, 0, BOT + WALL / 2, 0.3925); slab(1.07, WALL, TH, 0, BOT + WALL / 2, -0.3925);
+    slab(TH, WALL, 0.82, 0.5175, BOT + WALL / 2, 0); slab(TH, WALL, 0.82, -0.5175, BOT + WALL / 2, 0);
+    [[0.48, 0.36], [-0.48, 0.36], [0.48, -0.36], [-0.48, -0.36]].forEach(function (p) { slab(0.05, BOT - TH, 0.05, p[0], (BOT - TH) / 2, p[1]); });
+
+    var geo = new THREE.PlaneGeometry(1.0, 0.75, W - 1, H - 1); geo.rotateX(-Math.PI / 2);
+    var pos = geo.attributes.position, colors = new Float32Array(N * 3);
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    var grain = grainTexture();
+    var sand = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: grain, bumpMap: grain, bumpScale: 0.0035, vertexColors: true, roughness: 0.9, metalness: 0 }));
+    sand.castShadow = true; sand.receiveShadow = true; scene.add(sand);
+
+    // --- физика: осыпание до угла естественного откоса ---
+    var lastMoved = 0;
+    function slip(i, j, hi, lim) { var d = hi - h[j] - lim; if (d > 0) { var f = d * 0.11; dh[i] -= f; dh[j] += f; lastMoved += f; } }
+    function relax(iters) {
+      var moved = 0;
+      for (var it = 0; it < iters; it++) {
+        dh.fill(0); lastMoved = 0;
+        for (var y = 0; y < H; y++) {
+          for (var x = 0; x < W; x++) {
+            var i = y * W + x, hi = h[i];
+            if (x > 0) slip(i, i - 1, hi, REPOSE);
+            if (x < W - 1) slip(i, i + 1, hi, REPOSE);
+            if (y > 0) slip(i, i - W, hi, REPOSE);
+            if (y < H - 1) slip(i, i + W, hi, REPOSE);
+            if (x > 0 && y > 0) slip(i, i - W - 1, hi, REPOSE_D);
+            if (x < W - 1 && y > 0) slip(i, i - W + 1, hi, REPOSE_D);
+            if (x > 0 && y < H - 1) slip(i, i + W - 1, hi, REPOSE_D);
+            if (x < W - 1 && y < H - 1) slip(i, i + W + 1, hi, REPOSE_D);
+          }
+        }
+        for (var n = 0; n < N; n++) { var v = h[n] + dh[n]; h[n] = v < 0 ? 0 : (v > WALL_H ? WALL_H : v); }
+        moved += lastMoved;
+      }
+      return moved;
+    }
+    function seedTerrain(seed) {
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+        var u = x / W, v = y / H;
+        var val = 0.10 + (fbm(u * 3.0, v * 2.3, seed) - 0.5) * 0.10 + 0.05 * Math.exp(-((u - 0.68) * (u - 0.68) + (v - 0.4) * (v - 0.4)) / 0.02);
+        h[y * W + x] = Math.max(0.02, Math.min(0.2, val));
+      }
+      relax(40); dirty = true;
+    }
+
+    // --- инструменты ---
+    var tool = "pour", brushCm = 6, showProj = true, showLines = true, dirty = true, active = false, gx = -1, gy = -1;
+    function applyTool() {
+      var R = brushCm * 2, R2 = R * R, y0 = Math.max(0, gy - R), y1 = Math.min(H - 1, gy + R), x0 = Math.max(0, gx - R), x1 = Math.min(W - 1, gx + R);
+      var y, x, d2, f, i;
+      if (tool === "flat") {
+        var sum = 0, cnt = 0;
+        for (y = y0; y <= y1; y++) for (x = x0; x <= x1; x++) { d2 = (x - gx) * (x - gx) + (y - gy) * (y - gy); if (d2 > R2) continue; sum += h[y * W + x]; cnt++; }
+        var mean = cnt ? sum / cnt : 0;
+        for (y = y0; y <= y1; y++) for (x = x0; x <= x1; x++) { d2 = (x - gx) * (x - gx) + (y - gy) * (y - gy); if (d2 > R2) continue; f = 1 - d2 / R2; i = y * W + x; h[i] += (mean - h[i]) * 0.2 * f; }
+      } else {
+        var rate = tool === "pour" ? 0.0026 : -0.0026;
+        for (y = y0; y <= y1; y++) for (x = x0; x <= x1; x++) {
+          d2 = (x - gx) * (x - gx) + (y - gy) * (y - gy); if (d2 > R2) continue;
+          f = 1 - d2 / R2; f *= f; i = y * W + x;
+          var v = h[i] + rate * f; h[i] = v < 0 ? 0 : (v > WALL_H ? WALL_H : v);
+        }
+      }
+      dirty = true;
+    }
+
+    function paint() {
+      var col = geo.attributes.color.array;
+      for (var i = 0; i < N; i++) {
+        var t = h[i] / HSCALE; if (t > 1) t = 1;
+        var r, g, b;
+        if (showProj) {
+          var c = rampHC(Math.floor(t * 10) / 10); r = c[0] / 255; g = c[1] / 255; b = c[2] / 255;
+          var fr = t * 10 - Math.floor(t * 10);
+          if (showLines && fr < 0.1) { r *= 0.3; g *= 0.3; b *= 0.3; }
+        } else { var s = 0.8 + t * 0.12; r = s; g = s * 0.9; b = s * 0.7; }
+        col[i * 3] = r; col[i * 3 + 1] = g; col[i * 3 + 2] = b;
+      }
+      geo.attributes.color.needsUpdate = true;
+    }
+    function updateMesh() {
+      for (var i = 0; i < N; i++) pos.setY(i, BOT + h[i]);
+      pos.needsUpdate = true; geo.computeVertexNormals(); paint();
+    }
+
+    // --- указатель → ячейка сетки ---
+    var raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2(), hit = new THREE.Vector3();
+    var plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(BOT + 0.09));
+    function mapPointer(cx, cy) {
+      var r = canvas.getBoundingClientRect();
+      ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+      raycaster.setFromCamera(ndc, camera);
+      if (!raycaster.ray.intersectPlane(plane, hit)) { active = false; return; }
+      var fx = (hit.x + 0.5) / 1.0, fz = (hit.z + 0.375) / 0.75;
+      if (fx < -0.05 || fx > 1.05 || fz < -0.05 || fz > 1.05) { active = false; return; }
+      gx = Math.round(Math.max(0, Math.min(1, fx)) * (W - 1)); gy = Math.round(Math.max(0, Math.min(1, fz)) * (H - 1)); active = true;
+    }
+
+    // --- управление: инструмент / вращение / зум ---
+    var pts = {}, count = 0, rotating = false, lx = 0, ly = 0, pinch = 0;
+    canvas.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    canvas.addEventListener("pointerdown", function (e) {
+      canvas.setPointerCapture(e.pointerId); pts[e.pointerId] = { x: e.clientX, y: e.clientY }; count++;
+      if (count === 2) { active = false; rotating = true; var k = Object.keys(pts); pinch = Math.hypot(pts[k[0]].x - pts[k[1]].x, pts[k[0]].y - pts[k[1]].y); lx = (pts[k[0]].x + pts[k[1]].x) / 2; ly = (pts[k[0]].y + pts[k[1]].y) / 2; return; }
+      if (e.button === 2 || tool === "cam") { rotating = true; lx = e.clientX; ly = e.clientY; orbit.spin = false; spinBtn.setAttribute("aria-pressed", "false"); }
+      else { mapPointer(e.clientX, e.clientY); }
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      if (pts[e.pointerId]) { pts[e.pointerId].x = e.clientX; pts[e.pointerId].y = e.clientY; }
+      if (count === 2) {
+        var k = Object.keys(pts), mx = (pts[k[0]].x + pts[k[1]].x) / 2, my = (pts[k[0]].y + pts[k[1]].y) / 2, d = Math.hypot(pts[k[0]].x - pts[k[1]].x, pts[k[0]].y - pts[k[1]].y);
+        orbit.theta -= (mx - lx) * 0.008; orbit.phi = Math.max(0.25, Math.min(1.5, orbit.phi - (my - ly) * 0.006));
+        if (pinch) orbit.r = Math.max(0.7, Math.min(4, orbit.r * pinch / d));
+        lx = mx; ly = my; pinch = d; return;
+      }
+      if (rotating) { orbit.theta -= (e.clientX - lx) * 0.008; orbit.phi = Math.max(0.25, Math.min(1.5, orbit.phi - (e.clientY - ly) * 0.006)); lx = e.clientX; ly = e.clientY; return; }
+      if (active || count === 1) { if (count === 1 && tool !== "cam") mapPointer(e.clientX, e.clientY); }
+    });
+    function release(e) { if (pts[e.pointerId]) { delete pts[e.pointerId]; count = Math.max(0, count - 1); } if (count < 2) { pinch = 0; } if (count === 0) { rotating = false; active = false; } }
+    canvas.addEventListener("pointerup", release); canvas.addEventListener("pointercancel", release);
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); orbit.r = Math.max(0.7, Math.min(4, orbit.r * (1 + e.deltaY * 0.0012))); }, { passive: false });
+
+    // --- панель инструментов ---
+    var toolBtns = Array.prototype.slice.call(document.querySelectorAll("#heroTools [data-tool]"));
+    toolBtns.forEach(function (b) { b.addEventListener("click", function () { tool = b.getAttribute("data-tool"); toolBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); }); });
+    var slider = document.getElementById("brushSize"), sliderVal = document.getElementById("brushVal");
+    slider.addEventListener("input", function () { brushCm = parseInt(slider.value, 10); sliderVal.textContent = slider.value + " см"; });
+    var projBtn = document.getElementById("projBtn"), linesBtn = document.getElementById("linesBtn"), spinBtn = document.getElementById("spinBtn");
+    function toggle(btn, fn) { btn.addEventListener("click", function () { var on = btn.getAttribute("aria-pressed") !== "true"; btn.setAttribute("aria-pressed", on ? "true" : "false"); fn(on); }); }
+    toggle(projBtn, function (on) { showProj = on; spot.color.set(on ? 0xffffff : 0xffe9c8); spot.intensity = on ? 1.4 : 0.7; paint(); });
+    toggle(linesBtn, function (on) { showLines = on; paint(); });
+    toggle(spinBtn, function (on) { orbit.spin = on; });
+    document.getElementById("resetBtn").addEventListener("click", function () { seedTerrain(Math.random() * 100); });
+
+    // поворот и наклон по оси — ползунки + стрелки клавиатуры
+    var rotRange = document.getElementById("rotRange"), rotVal = document.getElementById("rotVal"), tiltRange = document.getElementById("tiltRange"), tiltVal = document.getElementById("tiltVal");
+    function syncSliders() {
+      var deg = Math.round(((orbit.theta * 180 / Math.PI) % 360 + 360) % 360), tilt = Math.round(orbit.phi * 180 / Math.PI);
+      rotRange.value = deg; rotVal.textContent = deg + "°"; tiltRange.value = tilt; tiltVal.textContent = tilt + "°";
+    }
+    rotRange.addEventListener("input", function () { orbit.theta = parseFloat(rotRange.value) * Math.PI / 180; orbit.spin = false; spinBtn.setAttribute("aria-pressed", "false"); rotVal.textContent = rotRange.value + "°"; });
+    tiltRange.addEventListener("input", function () { orbit.phi = parseFloat(tiltRange.value) * Math.PI / 180; tiltVal.textContent = tiltRange.value + "°"; });
+    canvas.addEventListener("keydown", function (e) {
+      var step = 4 * Math.PI / 180;
+      if (e.key === "ArrowLeft") { orbit.theta -= step; } else if (e.key === "ArrowRight") { orbit.theta += step; }
+      else if (e.key === "ArrowUp") { orbit.phi = Math.max(0.25, orbit.phi - step); } else if (e.key === "ArrowDown") { orbit.phi = Math.min(1.5, orbit.phi + step); }
+      else return;
+      e.preventDefault(); orbit.spin = false; spinBtn.setAttribute("aria-pressed", "false"); syncSliders();
+    });
+    canvas.addEventListener("pointerup", syncSliders);
+
+    function resize() { var w = stage.clientWidth, hh = stage.clientHeight; if (!w || !hh) return; renderer.setSize(w, hh, false); camera.aspect = w / hh; camera.updateProjectionMatrix(); }
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(stage); else window.addEventListener("resize", resize);
+    resize();
+    bindFullscreen(stage, document.getElementById("fsBtn0"));
+
+    seedTerrain(3.7); updateMesh(); dirty = false;
+    function animate() {
+      if (active && tool !== "cam") applyTool();
+      var moved = relax(2);
+      if (dirty || moved > 2e-5) { updateMesh(); dirty = false; }
+      if (orbit.spin) orbit.theta += 0.003;
+      updateCam(); renderer.render(scene, camera); requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+})();
+</script>
