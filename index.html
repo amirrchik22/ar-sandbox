@@ -128,7 +128,7 @@
   .legend { position: absolute; left: .8rem; bottom: .8rem; display: grid; gap: .3rem; font-size: .78rem;
     background: color-mix(in srgb, var(--card) 82%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: .55rem .7rem; backdrop-filter: blur(6px); }
   .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: .45rem; vertical-align: -1px; }
-  .dims { position: absolute; right: .8rem; top: .8rem; font-family: "JetBrains Mono", monospace; font-size: .74rem; color: var(--muted);
+  .dims { position: absolute; right: .8rem; top: 3.4rem; font-family: "JetBrains Mono", monospace; font-size: .74rem; color: var(--muted);
     background: color-mix(in srgb, var(--card) 82%, transparent); border: 1px solid var(--line); border-radius: 10px; padding: .5rem .65rem; line-height: 1.5; }
   .toggles { display: flex; flex-wrap: wrap; gap: .8rem 1.2rem; margin-top: .8rem; font-size: .88rem; }
   .toggles label { display: inline-flex; align-items: center; gap: .45rem; cursor: pointer; }
@@ -139,7 +139,21 @@
   .toolbar.overlay .range { color: var(--text); }
   #heroStage { aspect-ratio: 16 / 10; }
   #heroStage .dims { max-width: 46%; }
-  @media (max-width: 720px) { #heroStage { aspect-ratio: 4 / 5; } #heroStage .dims { display: none; } .toolbar.overlay { gap: .35rem; } .toolbar.overlay .btn { padding: .42rem .6rem; font-size: .8rem; } }
+  @media (max-width: 720px) {
+    #heroStage { aspect-ratio: 4 / 5; } #heroStage .dims { display: none; } .dims { font-size: .66rem; max-width: 64%; }
+    #heroTools #spinBtn, #heroTools label.range:has(#rotRange), #heroTools label.range:has(#tiltRange) { display: none; }
+    #model .stage { aspect-ratio: 4 / 5; }
+    .legend { left: .5rem; right: .5rem; bottom: .5rem; grid-template-columns: 1fr 1fr; gap: .15rem .5rem; font-size: .68rem; padding: .4rem .5rem; }
+    .legend span { line-height: 1.3; }
+    .table-wrap table, .table-wrap thead, .table-wrap tbody, .table-wrap tr, .table-wrap td { display: block; }
+    .table-wrap thead { display: none; }
+    .table-wrap tr { padding: .8rem .9rem; border-bottom: 1px solid var(--line); }
+    .table-wrap tr:last-child { border-bottom: 0; }
+    .table-wrap td { border: 0; padding: .15rem 0; }
+    .table-wrap td:first-child { font-size: 1.02rem; margin-bottom: .2rem; }
+    .table-wrap td:first-child b { font-family: "Manrope", sans-serif; }
+    .table-wrap td[data-h]:not(:first-child)::before { content: attr(data-h); display: block; font-family: "JetBrains Mono", monospace; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .45rem; }
+ .toolbar.overlay { gap: .35rem; } .toolbar.overlay .btn { padding: .42rem .6rem; font-size: .8rem; } }
   .stage.fs { position: fixed; inset: 0; z-index: 999; aspect-ratio: auto; border-radius: 0; }
   .stage:fullscreen { border-radius: 0; }
 
@@ -150,6 +164,32 @@
   .diagram .ico.pwr { color: var(--e3); }
   .diagram text.t { font-weight: 600; font-size: 15px; }
   .diagram text.lbl { fill: var(--muted); font-size: 12px; font-family: "JetBrains Mono", monospace; paint-order: stroke; stroke: var(--card); stroke-width: 6px; stroke-linejoin: round; }
+
+  .scheme { padding: 1rem; }
+  .scheme .cap { font-family: "Manrope", sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: .5rem; }
+  .scheme svg { width: 100%; height: auto; display: block; font-family: "Golos Text", sans-serif; }
+  .scheme .slab { fill: url(#hatchA); color: var(--line-strong); }
+  .scheme .floor { stroke: var(--line-strong); stroke-width: 2; }
+  .scheme .wood { fill: #8a6a45; }
+  .scheme .sandf { fill: #d9c79a; }
+  .scheme .steel { fill: #6f7a86; }
+  .scheme .sensor { fill: var(--sensor); }
+  .scheme .proj { fill: var(--proj); }
+  .scheme .dark { fill: #1b1f24; }
+  .scheme .mask { fill: var(--card); }
+  .scheme .fov { stroke: var(--sensor); stroke-width: 1.3; stroke-dasharray: 5 3; fill: none; }
+  .scheme .fov-fill { fill: var(--sensor); opacity: .08; }
+  .scheme .beam { stroke: var(--proj); stroke-width: 1.3; fill: none; }
+  .scheme .beam-fill { fill: var(--proj); opacity: .1; }
+  .scheme .wire { stroke: #9aa5b1; stroke-width: 1.2; stroke-dasharray: 4 3; fill: none; }
+  .scheme .kid { stroke: #9aa5b1; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .scheme .kid-head { fill: #9aa5b1; }
+  .scheme .dim { stroke: var(--muted); stroke-width: 1; fill: none; }
+  .scheme .ext { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 3; fill: none; opacity: .7; }
+  .scheme .ldr { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 3; fill: none; }
+  .scheme text { fill: var(--text); font-size: 13px; }
+  .scheme text.small { fill: var(--muted); font-size: 11.5px; font-family: "JetBrains Mono", monospace; }
+  .scheme text.lbl { paint-order: stroke; stroke: var(--card); stroke-width: 5px; stroke-linejoin: round; }
 
   .diagram { padding: 1rem; overflow-x: auto; }
   .diagram svg { width: 100%; min-width: 640px; height: auto; display: block; font-family: "Golos Text", sans-serif; }
@@ -189,11 +229,11 @@
 <nav class="top"><div class="wrap">
   <span class="brand"><i></i>AR-песочница</span>
   <a href="#principle">Принцип</a><a href="#demo">Демо</a><a href="#model">3D-модель</a><a href="#wiring">Подключение</a>
-  <a href="#parts">Компоненты</a><a href="#geometry">Геометрия</a><a href="#software">Софт</a><a href="#build">Сборка</a><a href="#risks">Риски</a><a href="#pitch">Показ</a>
+  <a href="#parts">Компоненты</a><a href="#geometry">Геометрия</a><a href="#mount">Крепление</a><a href="#software">Софт</a><a href="#build">Сборка</a><a href="#risks">Риски</a><a href="#pitch">Показ</a>
 </div></nav>
 
 <section class="hero"><div class="wrap">
-  <div class="eyebrow">Техническая презентация проекта</div>
+  <div class="eyebrow">Презентация проекта</div>
   <h1>Рельеф — из песка. Карта — из света.</h1>
   <p class="lead">Датчик глубины читает форму песка, компьютер превращает высоту в цвет и горизонтали, проектор возвращает карту на песок. Копаешь долину — она синеет. Насыпаешь гору — краснеет. Всё происходит в реальном времени.</p>
   <div class="ramp" aria-hidden="true"></div>
@@ -203,13 +243,13 @@
     <div class="stage" id="heroStage">
       <canvas id="heroSand" tabindex="0" aria-label="Интерактивная песочница: насыпай и копай песок, карта перекрашивается по высоте. Стрелки — вращение и наклон"></canvas>
       <button class="btn fsbtn" id="fsBtn0" type="button">На весь экран</button>
-      <div class="dims">песок осыпается под углом ≈ 33°<br>левая кнопка — инструмент<br>правая кнопка / два пальца — вращать<br>колёсико — приблизить</div>
+      <div class="dims">песок осыпается, как настоящий (угол 33°)<br>левая кнопка — инструмент<br>правая кнопка / два пальца — вращать<br>колёсико — приблизить · стрелки — повернуть</div>
       <div class="toolbar overlay" id="heroTools">
         <button class="btn warm" data-tool="pour" aria-pressed="true" type="button">Насыпать</button>
         <button class="btn" data-tool="dig" aria-pressed="false" type="button">Копать</button>
         <button class="btn" data-tool="flat" aria-pressed="false" type="button">Разровнять</button>
-        <button class="btn" data-tool="cam" aria-pressed="false" type="button">Камера</button>
-        <label class="range">Кисть <input type="range" id="brushSize" min="2" max="14" value="6" aria-label="Радиус кисти, см"><span id="brushVal">6 см</span></label>
+        <button class="btn" data-tool="cam" aria-pressed="false" type="button">Повернуть</button>
+        <label class="range">Размер <input type="range" id="brushSize" min="2" max="14" value="6" aria-label="Радиус кисти, см"><span id="brushVal">6 см</span></label>
         <button class="btn warm" id="projBtn" aria-pressed="true" type="button">Проекция</button>
         <button class="btn" id="linesBtn" aria-pressed="true" type="button">Горизонтали</button>
         <button class="btn" id="spinBtn" aria-pressed="false" type="button">Автоповорот</button>
@@ -219,6 +259,11 @@
       </div>
     </div>
   </div>
+  <div class="grid-3" style="margin-top:1.2rem">
+    <div class="tile"><h3>Что это</h3><p>Ящик с песком на полу, над ним датчик и проектор. Ребёнок лепит рельеф руками, а на песок проецируется живая карта: вода, равнины, горы.</p></div>
+    <div class="tile"><h3>Для кого</h3><p>Детские центры, музеи и научные площадки, школьная география, сенсорные и реабилитационные комнаты, шоурумы и выставки.</p></div>
+    <div class="tile"><h3>Что нужно от вас</h3><p>Место ≈ 2,5 × 2,5 м с возможностью приглушить свет, розетка 220 В, бетонный потолок для подвеса — или ставим напольную стойку без сверления. Монтаж и настройка — наша работа; персонал включает всё одним выключателем.</p></div>
+  </div>
 </div></section>
 
 <section id="principle"><div class="wrap">
@@ -227,11 +272,11 @@
   <p class="lead">Установка не «показывает видео» — она измеряет реальный песок и пересчитывает картинку десятки раз в секунду.</p>
   <div class="grid-3">
     <div class="tile sensor"><div class="k">01 · Датчик глубины</div>
-      <p>Висит над центром ящика, смотрит строго вниз. Излучает инфракрасный паттерн (или измеряет время пролёта) и получает карту расстояний до каждой точки песка.</p>
+      <p>Висит над центром ящика и смотрит вниз. Невидимым инфракрасным светом измеряет расстояние до каждой точки песка — получается карта высот.</p>
       <ul><li class="spec">30 кадров/с</li><li class="spec">точность по высоте ≈ 2–5 мм на рабочей дистанции</li></ul>
     </div>
     <div class="tile pc"><div class="k">02 · Компьютер</div>
-      <p>Фильтрует шум и руки, вычитает опорную плоскость дна, получает карту высот. Каждой высоте назначает цвет шкалы и рисует горизонтали. При желании считает воду.</p>
+      <p>Убирает дрожание и руки, отсчитывает высоту от дна ящика и каждой высоте назначает цвет: низ — синий, верх — красный. Рисует линии-горизонтали, при желании — воду.</p>
       <ul><li class="spec">задержка цикла ≈ 60–120 мс</li><li class="spec">расчёт на видеокарте</li></ul>
     </div>
     <div class="tile proj"><div class="k">03 · Проектор</div>
@@ -252,24 +297,32 @@
 <section id="model"><div class="wrap">
   <div class="eyebrow">Конструкция</div>
   <h2>Интерактивная 3D-модель установки</h2>
-  <p class="lead">Вращай мышью, приближай колёсиком. Бирюзовые лучи — поле зрения датчика, янтарные — луч проектора. Оба накрывают весь ящик с запасом.</p>
+  <p class="lead">Ящик стоит на полу — ребёнок сидит на корточках и играет руками. Вращай мышью, приближай колёсиком, переключай способ крепления. Бирюзовые лучи — поле зрения датчика, янтарные — луч проектора. Оба накрывают весь ящик с запасом.</p>
   <div class="card model">
     <div class="stage">
-      <canvas id="scene3d" aria-label="3D-модель: ящик с песком, стойка, датчик и проектор"></canvas>
+      <canvas id="scene3d" aria-label="3D-модель: ящик с песком на полу, ребёнок для масштаба, датчик и проектор на напольной стойке или на потолочном подвесе"></canvas>
       <button class="btn fsbtn" id="fsBtn1" type="button">На весь экран</button>
-      <div class="dims">ящик 1000 × 750 мм<br>борт 250 мм · песок 100–150 мм<br>датчик ↑ 1,0–1,3 м над песком<br>верх стойки ≈ 2,0 м от пола</div>
+      <div class="dims">напольная стойка ≈ 2,0 м<br>датчик 1,45 м · проектор 1,9 м от пола<br>ящик на полу: борт 0,28 м · песок ≈ 0,15 м</div>
       <div class="legend">
-        <span><i style="background:#8a6a45"></i>Короб из фанеры на ножках</span>
+        <span><i style="background:#8a6a45"></i>Короб из фанеры на полу</span>
         <span><i style="background:linear-gradient(90deg,var(--e0),var(--e2),var(--e5))"></i>Песок, окрашен по высоте</span>
-        <span><i style="background:#6f7a86"></i>Стойка и верхняя балка</span>
+        <span><i style="background:#6f7a86"></i>Стойка или подвес</span>
         <span><i style="background:var(--sensor)"></i>Датчик глубины</span>
         <span><i style="background:var(--proj)"></i>Проектор</span>
+        <span><i style="background:#9aa5b1"></i>Ребёнок ≈ 5 лет, для масштаба</span>
       </div>
+    </div>
+    <div class="toolbar" id="mountTools" aria-label="Способ крепления">
+      <span class="range">Крепление:</span>
+      <button class="btn" data-mount="stand" aria-pressed="true" type="button">Напольная стойка</button>
+      <button class="btn" data-mount="c2" aria-pressed="false" type="button">Потолок 2 м</button>
+      <button class="btn" data-mount="c3" aria-pressed="false" type="button">Потолок 3 м</button>
     </div>
     <div class="toggles">
       <label><input type="checkbox" id="tSensor" checked> поле зрения датчика</label>
       <label><input type="checkbox" id="tProj" checked> луч проектора</label>
       <label><input type="checkbox" id="tLight" checked> свет проекции на песке</label>
+      <label><input type="checkbox" id="tKid" checked> ребёнок для масштаба</label>
       <label><input type="checkbox" id="tSpin" checked> автоповорот</label>
     </div>
   </div>
@@ -277,7 +330,7 @@
 
 <section id="wiring"><div class="wrap">
   <div class="eyebrow">Подключение</div>
-  <h2>Что куда втыкается</h2>
+  <h2>Схема подключения</h2>
   <div class="card diagram">
     <svg viewBox="0 0 900 520" role="img" aria-label="Схема подключения: датчик глубины через адаптер в USB компьютера, компьютер по HDMI в проектор, питание 220 В через сетевой фильтр на компьютер, проектор и адаптер датчика">
       <!-- провода -->
@@ -297,7 +350,7 @@
           <path d="M9 28 L4 44 M21 28 V44 M33 28 L38 44"/>
         </g>
         <text class="t" x="78" y="42">Датчик глубины</text>
-        <text class="small" x="78" y="66">Kinect v1 / v2</text>
+        <text class="small" x="78" y="66">сенсор Kinect v1 / v2</text>
         <text class="small" x="78" y="86">над песком, ось вниз</text>
       </g>
 
@@ -325,7 +378,7 @@
         </g>
         <text class="t" x="78" y="42">Компьютер</text>
         <text class="small" x="78" y="66">дискретная видеокарта</text>
-        <text class="small" x="78" y="86">USB на материнской плате</text>
+        <text class="small" x="78" y="86">прямой разъём USB</text>
         <text class="small" x="78" y="106">выход HDMI</text>
         <text class="small" x="78" y="126">Windows 10/11 или Linux</text>
       </g>
@@ -367,15 +420,15 @@
   <div class="grid-2" style="margin-top:1rem">
     <div class="tile"><h3>Правила по кабелям</h3>
       <ul>
-        <li>Датчик — в порт USB <b>на материнской плате</b>, не через хаб. Kinect v2 требует USB 3.0 и стабильное питание.</li>
+        <li>Датчик — напрямую в разъём USB на задней стенке компьютера, без разветвителей: ему нужен быстрый порт (USB 3.0 для Kinect v2) и ровное питание.</li>
         <li>USB до 3 м. Если стойка выше — активный удлинитель.</li>
-        <li>HDMI до 5–10 м без проблем; проектор работает как <b>второй монитор</b> в режиме «расширить», в родном разрешении.</li>
+        <li>Кабель HDMI до 10 м без проблем. Проектор подключён как <b>второй экран</b> компьютера.</li>
         <li>Все три потребителя — через один сетевой фильтр с выключателем: включил — заработало.</li>
       </ul>
     </div>
     <div class="tile"><h3>Что настраивается один раз</h3>
       <ul>
-        <li>Проектор: ручной фокус, выключенная автокоррекция трапеции (её делает софт).</li>
+        <li>Проектор: резкость наводится вручную; автоматическое выравнивание картинки в самом проекторе отключено — этим занимается программа.</li>
         <li>Компьютер: автозапуск программы при включении, отключение спящего режима, показ только на проекторе.</li>
         <li>Датчик: жёстко закреплён, ось вниз. Любое смещение после калибровки — перекалибровка.</li>
       </ul>
@@ -389,12 +442,12 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Узел</th><th>Что именно</th><th>Ключевые требования</th></tr></thead>
     <tbody>
-      <tr><td><b>Датчик глубины</b></td><td>Microsoft Kinect v1 (Xbox 360) или Kinect v2 (Xbox One) с адаптером для ПК</td><td class="spec">v1: 640×480, поле 57°×43°, дистанция 0,8–4 м, USB 2.0<br>v2: 512×424 ToF, поле 70°×60°, дистанция 0,5–4,5 м, USB 3.0<br>альтернатива через форки софта: Azure Kinect, Orbbec Femto, Intel RealSense</td></tr>
-      <tr><td><b>Проектор</b></td><td>DLP или LCD, формат 4:3 или 16:10</td><td class="spec">яркость от 3000 лм для обычного зала<br>проекционное отношение ≤ 1,0 (короткофокусный) — или выше стойка<br>разрешение 1024×768 и выше · ручной фокус</td></tr>
+      <tr><td><b>Датчик глубины</b></td><td>Microsoft Kinect v1 (Xbox 360) или Kinect v2 (Xbox One) с адаптером для ПК</td><td class="spec">v1: 640×480, поле 57°×43°, дистанция 0,8–4 м, USB 2.0<br>v2: 512×424, измеряет время пролёта света (точнее v1), поле 70°×60°, USB 3.0<br>современные аналоги — Azure Kinect, Orbbec Femto, Intel RealSense — поддерживаются доработанными версиями программы</td></tr>
+      <tr><td><b>Проектор</b></td><td>DLP или LCD, формат 4:3 (под пропорции ящика); 16:10 допустим с запасом по ширине</td><td class="spec">яркость от 3000 лм для обычного зала<br>обычный объектив (проекционное отношение ≈ 1,5) — высота ≈ 1,7 м над песком<br>разрешение 1024×768 и выше · ручной фокус</td></tr>
       <tr><td><b>Компьютер</b></td><td>Стационарный ПК или мощный ноутбук</td><td class="spec">дискретная видеокарта NVIDIA / AMD среднего уровня<br>порт USB 3.0, выход HDMI · 8 ГБ ОЗУ<br>Windows 10/11 (Magic Sand) или Linux (SARndbox)</td></tr>
-      <tr><td><b>Короб</b></td><td>Фанера 15–18 мм, внутренний размер 1000×750 мм</td><td class="spec">высота борта 250 мм · углы на шкантах/уголках · стык герметиком<br>ножки или тумба: верх борта ≈ 750–800 мм от пола (удобно детям и взрослым)</td></tr>
+      <tr><td><b>Короб</b></td><td>Фанера 15–18 мм, внутренний размер 1000×750 мм, стоит на полу</td><td class="spec">высота борта 250–300 мм · углы на шкантах/уголках · стык герметиком<br>без ножек: ребёнок сидит на корточках или на коленях и играет руками<br>снизу войлок или резина, вокруг — коврик под просыпанный песок</td></tr>
       <tr><td><b>Песок</b></td><td>Мелкий просеянный, сухой (кварцевый / игровой)</td><td class="spec">слой 100–150 мм → объём ≈ 90–110 л<br>светлый песок даёт более яркую проекцию</td></tr>
-      <tr><td><b>Стойка</b></td><td>Вертикальная опора + верхняя балка над центром ящика</td><td class="spec">брус 50×50 / алюминиевый профиль 40×40<br>жёсткость: датчик и проектор не должны качаться<br>площадка с регулировкой наклона проектора</td></tr>
+      <tr><td><b>Стойка или подвес</b></td><td>Напольная стойка с двумя консолями над центром ящика — или крепление к потолку (раздел «Крепление»)</td><td class="spec">брус 50×50 / профиль 40×40 / труба 40–50 мм<br>датчик ≈ 1,45 м, проектор ≈ 1,9 м от пола · всё железо над центром ящика<br>жёсткость: датчик и проектор не должны качаться · площадка с регулировкой наклона</td></tr>
       <tr><td><b>Мелочи</b></td><td>Кабели, крепёж, сетевой фильтр, калибровочный диск</td><td class="spec">USB-удлинитель активный при длине > 3 м<br>белый плоский диск ⌀ 15–20 см для калибровки проектора</td></tr>
     </tbody>
   </table></div>
@@ -405,19 +458,128 @@
   <h2>Как посчитать высоту датчика и проектора</h2>
   <div class="grid-2">
     <div class="tile sensor"><h3>Датчик</h3>
-      <p>Ось строго вертикально, над центром ящика. Ширина зоны, которую он видит на высоте H:</p>
-      <div class="formula">W = 2 · H · tan(FOV / 2)</div>
+      <p>Ось строго вертикально, над центром ящика. Чем выше датчик, тем шире зона, но грубее измерение. Для инженера — ширина зоны на высоте H:</p>
+      <div class="formula">W = 2 · H · tan(угол обзора / 2)</div>
       <p class="spec">Kinect v1 (57°): H = 1,0 м → зона 1,09 × 0,79 м — ящик 1,0 × 0,75 накрыт с запасом.<br>Kinect v2 (70°): H = 0,8 м → зона 1,12 × 0,92 м.</p>
       <p>Рабочая рекомендация: <b>1,0–1,3 м над поверхностью песка</b>. Ниже — детальнее, но края могут не влезть; выше — грубее по высоте.</p>
     </div>
     <div class="tile proj"><h3>Проектор</h3>
-      <p>Дистанция до песка зависит от проекционного отношения (throw ratio) объектива:</p>
-      <div class="formula">D = throw_ratio · W_изображения</div>
-      <p class="spec">Ширина изображения 1,0 м → отношение 0,5 даёт D = 0,5 м; отношение 1,2 даёт D = 1,2 м.</p>
-      <p>Проектор ставится рядом с датчиком со смещением до 30 см; наклон и трапеция компенсируются калибровкой. Изображение делаем чуть шире ящика — края обрезаются программно.</p>
+      <p>Высота проектора зависит от объектива: обычный объектив даёт картинку шириной 1,1 м с высоты ≈ 1,7 м. Для инженера — дистанция до песка:</p>
+      <div class="formula">D = проекционное отношение · ширина картинки</div>
+      <p class="spec">Картинка 1,1 м (чуть шире ящика) → отношение 1,5 даёт D = 1,65 м над песком, ≈ 1,8 м от пола. Короткофокусный 0,6 дал бы всего 0,66 м — низко над детьми, не наш случай.</p>
+      <p>Проектор висит выше датчика, со смещением 25–35 см в сторону, чтобы датчик не попадал в луч; наклон и трапеция компенсируются калибровкой. Изображение делаем чуть шире ящика — края обрезаются программно.</p>
     </div>
   </div>
-  <div class="note" style="margin-top:1rem">Итоговая высота стойки: верх борта ≈ 0,75 м + 1,0–1,3 м до датчика ⇒ балка на <b>≈ 1,9–2,1 м от пола</b>. Помещается в стандартный потолок 2,5 м, к потолку крепить не обязательно.</div>
+  <div class="note" style="margin-top:1rem">Ящик стоит на полу: песок ≈ 0,15 м от пола. Датчик: 0,15 + 1,0–1,3 ⇒ <b>1,15–1,45 м от пола</b>. Проектор с обычным объективом: 0,15 + ≈ 1,7 ⇒ <b>≈ 1,85 м от пола</b>. Помещается под потолок 2 м — на напольной стойке или на подвесе, см. раздел «Крепление».</div>
+</div></section>
+
+<section id="mount"><div class="wrap">
+  <div class="eyebrow">Крепление к потолку</div>
+  <h2>Два варианта подвеса: потолок 2 м и потолок 3 м и выше</h2>
+  <p class="lead">Песочница стоит на полу, поэтому датчик в любом случае должен висеть низко — 1,0–1,3 м над песком. Проектор висит там, где его картинка ровно накрывает ящик. Всё железо — над центром ящика, где никто не ходит.</p>
+  <div class="grid-2">
+    <div class="card scheme">
+      <div class="cap">Потолок 2,0–2,5 м</div>
+      <svg viewBox="0 0 520 470" role="img" aria-label="Потолок 2 метра: проектор на кронштейне прямо на потолке, датчик глубины на опуске полметра, песочница стоит на полу, рядом ребёнок на корточках">
+        <defs><pattern id="hatchA" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="1"/></pattern></defs>
+        <rect class="slab" x="20" y="146" width="480" height="14"/><line class="floor" x1="20" y1="160" x2="500" y2="160"/>
+        <rect class="slab" x="20" y="420" width="480" height="14"/><line class="floor" x1="20" y1="420" x2="500" y2="420"/>
+        <polygon class="beam-fill" points="174,183 124,400 276,400"/>
+        <line class="beam" x1="174" y1="183" x2="124" y2="400"/><line class="beam" x1="174" y1="183" x2="276" y2="400"/>
+        <polygon class="fov-fill" points="222,237 132,400 312,400"/>
+        <line class="fov" x1="222" y1="237" x2="132" y2="400"/><line class="fov" x1="222" y1="237" x2="312" y2="400"/>
+        <path class="sandf" d="M135 416 V402 Q160 393 185 400 T235 398 T265 404 V416 Z"/>
+        <rect class="wood" x="131" y="383" width="4" height="37"/><rect class="wood" x="265" y="383" width="4" height="37"/><rect class="wood" x="131" y="416" width="138" height="4"/>
+        <circle class="kid-head" cx="298" cy="340" r="10.5"/>
+        <path class="kid" d="M296 354 L318 392 L290 394 L296 418 M288 418 H305 M296 356 L278 372 L256 393"/>
+        <rect class="steel" x="163" y="160" width="22" height="4"/><rect class="steel" x="172" y="164" width="4" height="6"/>
+        <rect class="proj" x="155" y="169" width="39" height="13" rx="3"/><circle class="dark" cx="174" cy="183" r="2.6"/>
+        <rect class="steel" x="211" y="160" width="22" height="4"/><rect class="steel" x="220" y="164" width="4" height="64"/>
+        <rect class="sensor" x="205" y="228" width="34" height="8" rx="2"/><circle class="dark" cx="222" cy="237" r="1.6"/>
+        <line class="ext" x1="239" y1="237" x2="356" y2="237"/><line class="ext" x1="194" y1="183" x2="388" y2="183"/><line class="ext" x1="269" y1="400" x2="388" y2="400"/>
+        <line class="dim" x1="352" y1="237" x2="352" y2="400"/><line class="dim" x1="348" y1="237" x2="356" y2="237"/><line class="dim" x1="348" y1="400" x2="356" y2="400"/>
+        <text class="small" transform="translate(347 318) rotate(-90)" text-anchor="middle">датчик 1,3 м</text>
+        <line class="dim" x1="384" y1="183" x2="384" y2="400"/><line class="dim" x1="380" y1="183" x2="388" y2="183"/><line class="dim" x1="380" y1="400" x2="388" y2="400"/>
+        <text class="small" transform="translate(379 291) rotate(-90)" text-anchor="middle">проектор 1,7 м</text>
+        <line class="dim" x1="416" y1="160" x2="416" y2="420"/><line class="dim" x1="412" y1="160" x2="420" y2="160"/><line class="dim" x1="412" y1="420" x2="420" y2="420"/>
+        <text class="small" transform="translate(411 290) rotate(-90)" text-anchor="middle">потолок 2,0 м</text>
+        <text class="small" x="200" y="140" text-anchor="middle">фланец + 4 анкера в бетон</text>
+        <text class="small" x="118" y="171" text-anchor="end">потолочный</text><text class="small" x="118" y="185" text-anchor="end">кронштейн</text>
+        <line class="ldr" x1="122" y1="176" x2="153" y2="176"/>
+        <text class="small" x="240" y="199">опуск 0,5 м</text><text class="small" x="240" y="213">труба 25–32 мм</text>
+        <line class="ldr" x1="226" y1="205" x2="236" y2="205"/>
+        <text class="small" x="240" y="252">низ железа</text><text class="small" x="240" y="266">≈ 1,4 м от пола</text>
+        <text class="small" x="118" y="368" text-anchor="end">картинка</text><text class="small" x="118" y="382" text-anchor="end">≈ 1,1–1,3 м</text>
+        <text class="small" x="118" y="405" text-anchor="end">песок 0,15 м</text>
+        <text class="small" x="260" y="455" text-anchor="middle">песочница на полу · ребёнок ≈ 5 лет на корточках</text>
+      </svg>
+    </div>
+    <div class="card scheme">
+      <div class="cap">Потолок 3 м и выше</div>
+      <svg viewBox="0 0 520 470" role="img" aria-label="Потолок 3 метра и выше: одна штанга от потолка с растяжками, проектор на хомуте, датчик внизу штанги, песочница стоит на полу">
+        <rect class="slab" x="20" y="16" width="480" height="14"/><line class="floor" x1="20" y1="30" x2="500" y2="30"/>
+        <rect class="slab" x="20" y="420" width="480" height="14"/><line class="floor" x1="20" y1="420" x2="500" y2="420"/>
+        <polygon class="beam-fill" points="174,183 124,400 276,400"/>
+        <line class="beam" x1="174" y1="183" x2="124" y2="400"/><line class="beam" x1="174" y1="183" x2="276" y2="400"/>
+        <polygon class="fov-fill" points="222,237 132,400 312,400"/>
+        <line class="fov" x1="222" y1="237" x2="132" y2="400"/><line class="fov" x1="222" y1="237" x2="312" y2="400"/>
+        <path class="sandf" d="M135 416 V402 Q160 393 185 400 T235 398 T265 404 V416 Z"/>
+        <rect class="wood" x="131" y="383" width="4" height="37"/><rect class="wood" x="265" y="383" width="4" height="37"/><rect class="wood" x="131" y="416" width="138" height="4"/>
+        <circle class="kid-head" cx="298" cy="340" r="10.5"/>
+        <path class="kid" d="M296 354 L318 392 L290 394 L296 418 M288 418 H305 M296 356 L278 372 L256 393"/>
+        <line class="wire" x1="200" y1="164" x2="92" y2="30"/><line class="wire" x1="200" y1="164" x2="308" y2="30"/>
+        <rect class="steel" x="189" y="30" width="22" height="4"/><rect class="steel" x="197" y="34" width="6" height="194"/>
+        <circle class="steel" cx="200" cy="164" r="4"/>
+        <rect class="steel" x="176" y="166" width="24" height="3"/>
+        <rect class="proj" x="155" y="169" width="39" height="13" rx="3"/><circle class="dark" cx="174" cy="183" r="2.6"/>
+        <rect class="steel" x="200" y="226" width="24" height="3"/>
+        <rect class="sensor" x="205" y="228" width="34" height="8" rx="2"/><circle class="dark" cx="222" cy="237" r="1.6"/>
+        <line class="ext" x1="239" y1="237" x2="356" y2="237"/><line class="ext" x1="194" y1="183" x2="388" y2="183"/><line class="ext" x1="269" y1="400" x2="388" y2="400"/>
+        <line class="dim" x1="352" y1="237" x2="352" y2="400"/><line class="dim" x1="348" y1="237" x2="356" y2="237"/><line class="dim" x1="348" y1="400" x2="356" y2="400"/>
+        <text class="small" transform="translate(347 318) rotate(-90)" text-anchor="middle">датчик 1,3 м</text>
+        <line class="dim" x1="384" y1="183" x2="384" y2="400"/><line class="dim" x1="380" y1="183" x2="388" y2="183"/><line class="dim" x1="380" y1="400" x2="388" y2="400"/>
+        <text class="small" transform="translate(379 291) rotate(-90)" text-anchor="middle">проектор 1,7 м</text>
+        <line class="dim" x1="416" y1="30" x2="416" y2="420"/><line class="dim" x1="412" y1="30" x2="420" y2="30"/><line class="dim" x1="412" y1="420" x2="420" y2="420"/>
+        <text class="small" transform="translate(411 225) rotate(-90)" text-anchor="middle">потолок 3,0 м</text>
+        <rect class="mask" x="136" y="39" width="128" height="15" rx="3"/><text class="small" x="200" y="50" text-anchor="middle">фланец + 4 анкера</text>
+        <text class="small" x="118" y="112" text-anchor="end">штанга 1,5 м</text><text class="small" x="118" y="126" text-anchor="end">труба 40–50 мм</text>
+        <line class="ldr" x1="122" y1="118" x2="196" y2="118"/>
+        <text class="small" x="300" y="118">растяжки</text><text class="small" x="300" y="132">3 троса 2 мм</text>
+        <text class="small" x="118" y="176" text-anchor="end">хомут проектора</text><line class="ldr" x1="122" y1="172" x2="174" y2="167"/>
+        <text class="small" x="118" y="228" text-anchor="end">датчик внизу</text><text class="small" x="118" y="242" text-anchor="end">штанги</text>
+        <line class="ldr" x1="122" y1="232" x2="203" y2="229"/>
+        <text class="small" x="240" y="252">низ железа</text><text class="small" x="240" y="266">≈ 1,4 м от пола</text>
+        <text class="small" x="118" y="368" text-anchor="end">картинка</text><text class="small" x="118" y="382" text-anchor="end">≈ 1,1–1,3 м</text>
+        <text class="small" x="118" y="405" text-anchor="end">песок 0,15 м</text>
+        <text class="small" x="260" y="455" text-anchor="middle">песочница на полу · ребёнок ≈ 5 лет на корточках</text>
+      </svg>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top:1rem">
+    <div class="tile sensor"><h3>Общее для любого потолка</h3>
+      <ul>
+        <li>Датчик — всегда на 1,0–1,3 м над песком, то есть 1,15–1,45 м от пола. Прямо на потолок его не вешают: с 2 м он видит грубо, с 3 м шум датчика больше, чем горка из песка. Опуск нужен при любом потолке.</li>
+        <li>Проектор — на высоте «проекционное отношение × ширина картинки 1,1 м». Обычный объектив (отношение ≈ 1,5) даёт ≈ 1,7 м над песком, то есть ≈ 1,85 м от пола — как раз под потолок 2 м.</li>
+        <li>Всё железо — над центром ящика, в габарите 1,0 × 0,75 м: туда никто не ходит, взрослый у борта не задевает головой.</li>
+        <li>Датчик и проектор разнесены на 25–35 см, датчик ниже и вне луча проектора — иначе тень на песке.</li>
+      </ul>
+    </div>
+    <div class="tile"><h3>Крепёж и кабели</h3>
+      <ul>
+        <li>Только в бетон или несущую балку: анкеры 8–10 мм, фланец с четырьмя анкерами под опуск. Гипсокартон и натяжной потолок нагрузку не держат.</li>
+        <li>Проектор — универсальный потолочный кронштейн на 10–15 кг плюс страховочный тросик.</li>
+        <li>Датчик — кронштейн под Kinect или самодельный хомут. После калибровки не трогать.</li>
+        <li>Кабели в кабель-канале по потолку и по штанге. USB длиннее 3 м — активный удлинитель, HDMI до 10 м без проблем.</li>
+      </ul>
+    </div>
+    <div class="tile proj"><h3>Что выбрать</h3>
+      <ul>
+        <li><b>Потолок 2–2,5 м:</b> проектор прямо на потолок, датчик на опуске 0,5–1 м. Минимум железа, ничего не качается. Короткофокусный проектор не нужен.</li>
+        <li><b>Потолок 3 м и выше:</b> одна штанга с растяжками длиной «высота потолка минус 1,5 м» (потолок 3 м — штанга 1,5 м, 3,5 м — 2 м), проектор на хомуте, датчик внизу. Либо напольная стойка — ничего не сверлим, установку можно переставить.</li>
+        <li>Напольная стойка из 3D-модели — запасной вариант при любом потолке и для арендованного помещения.</li>
+      </ul>
+    </div>
+  </div>
 </div></section>
 
 <section id="software"><div class="wrap">
@@ -425,17 +587,18 @@
   <h2>Два готовых открытых решения</h2>
   <div class="grid-2">
     <div class="tile"><div class="k">Вариант А · Magic Sand</div>
-      <p>Приложение на openFrameworks. <b>Windows и macOS</b>, поддержка Kinect v1 и v2, встроенный мастер калибровки, встроенные мини-игры. Проще всего для запуска на обычном ПК.</p>
-      <ul><li>цветовая шкала и горизонтали настраиваются в интерфейсе</li><li>упрощённая вода</li><li>подходит для базовой и средней конфигурации</li></ul>
+      <p>Бесплатная программа с открытым кодом. <b>Windows и macOS</b>, поддержка Kinect v1 и v2, встроенный мастер калибровки, встроенные мини-игры. Проще всего для запуска на обычном ПК.</p>
+      <ul><li>цветовая шкала и горизонтали настраиваются в интерфейсе</li><li>упрощённая вода</li><li>подходит для большинства установок</li></ul>
     </div>
     <div class="tile"><div class="k">Вариант Б · SARndbox (UC Davis)</div>
-      <p>Оригинальная разработка проекта. <b>Linux</b>, движок Vrui. Лучшая физика воды и дождя, максимальная точность.</p>
+      <p>Оригинальная разработка Калифорнийского университета (UC Davis). <b>Linux</b>. Лучшая физика воды и дождя, максимальная точность.</p>
       <ul><li>вода стекает по рельефу, собирается в озёра, испаряется</li><li>дождь «из руки» над песком</li><li>выше требования к видеокарте и к навыкам настройки</li></ul>
     </div>
   </div>
   <h3 style="margin-top:1.4rem">Калибровка — четыре этапа, делается один раз</h3>
+  <p class="lead" style="font-size:1rem">Калибровка — это «знакомство» датчика и проектора: программа запоминает, куда на песке попадает каждая точка картинки. Делается один раз при монтаже и повторяется, только если оборудование сдвинули (≈ 10 минут).</p>
   <ol class="steps">
-    <li><div><b>Внутренняя калибровка датчика</b>Загружаются заводские параметры объектива, проверяется отсутствие искажений по краям.<span class="chk">плоский лист на песке даёт ровную плоскость на экране</span></div></li>
+    <li><div><b>Проверка датчика</b>Загружаем заводские настройки и проверяем, что ровный лист на песке выглядит ровным, в том числе по краям.<span class="chk">плоский лист на песке даёт ровную плоскость на экране</span></div></li>
     <li><div><b>Опорная плоскость и границы</b>Песок разравнивается, программа запоминает «ноль высоты» и четыре угла ящика.<span class="chk">вне ящика ничего не рисуется</span></div></li>
     <li><div><b>Связка датчик ↔ проектор</b>Проектор показывает перекрестия, на каждое кладётся белый диск, датчик его видит — так собирается матрица соответствия точек.<span class="chk">горизонталь проходит по реальной кромке насыпи, без сдвига</span></div></li>
     <li><div><b>Шкала и вода</b>Задаётся диапазон высот под глубину песка, шаг горизонталей, цвета, скорость воды.<span class="chk">дно ящика — синее, максимальная горка — красная</span></div></li>
@@ -446,12 +609,12 @@
   <div class="eyebrow">Сборка</div>
   <h2>Порядок работ</h2>
   <ol class="steps">
-    <li><div><b>Короб</b>Раскрой фанеры, сборка на уголках и клее, герметик по стыкам, шлифовка кромок. Ножки или тумба под нужную высоту.<span class="chk">внутри 1000×750, борт 250, стоит без люфта</span></div></li>
-    <li><div><b>Стойка</b>Опора за задней стенкой ящика, верхняя балка над центром, площадка под датчик и проектор с регулировкой.<span class="chk">толчок по стойке — картинка не «плывёт»</span></div></li>
+    <li><div><b>Короб</b>Раскрой фанеры, сборка на уголках и клее, герметик по стыкам, шлифовка кромок. Ставится прямо на пол, снизу войлок или резина.<span class="chk">внутри 1000×750, борт 250–300, стоит без люфта, кромки без заусенцев</span></div></li>
+    <li><div><b>Стойка или подвес</b>Напольная стойка за задней стенкой с двумя консолями над центром ящика — или опуск с потолка (раздел «Крепление»). Площадки под датчик и проектор с регулировкой.<span class="chk">толчок по стойке или штанге — картинка не «плывёт»</span></div></li>
     <li><div><b>Датчик</b>Крепится над центром, ось вниз, высота 1,0–1,3 м над песком. Кабель — по стойке, с запасом.<span class="chk">весь ящик виден в кадре глубины с полями</span></div></li>
-    <li><div><b>Проектор</b>Рядом с датчиком, наклон в центр ящика, ручной фокус по песку, изображение чуть шире ящика.<span class="chk">резкость по всей площади</span></div></li>
+    <li><div><b>Проектор</b>Выше датчика и в стороне от него, наклон в центр ящика, ручной фокус по песку, изображение чуть шире ящика.<span class="chk">резкость по всей площади, датчик не отбрасывает тень на песок</span></div></li>
     <li><div><b>Компьютер</b>Драйверы датчика, программа, проектор как второй экран в родном разрешении, автозапуск.<span class="chk">программа видит датчик и выводит на проектор</span></div></li>
-    <li><div><b>Песок</b>Засыпка слоем 100–150 мм, разравнивание правилом.<span class="chk">ровная плоскость до калибровки</span></div></li>
+    <li><div><b>Песок</b>Засыпка слоем 100–150 мм, разравнивание длинной рейкой.<span class="chk">ровная плоскость до калибровки</span></div></li>
     <li><div><b>Калибровка</b>Четыре этапа из раздела выше. Сохраняется в файл настроек.<span class="chk">контур насыпи и цвет совпадают с реальным песком</span></div></li>
     <li><div><b>Доводка и сдача</b>Настройка шкалы под реальную глубину, шаг горизонталей, тест воды, инструкция для персонала: включение одним выключателем.<span class="chk">включение «с нуля» до картинки — без участия настройщика</span></div></li>
   </ol>
@@ -460,6 +623,7 @@
 <section id="risks"><div class="wrap">
   <div class="eyebrow">Риски и как их закрываем</div>
   <h2>Что обычно ломает такие установки</h2>
+  <p class="lead">Три главных риска — яркий свет в зале, сдвиг крепежа и снятый с производства датчик. У каждого есть штатное решение.</p>
   <div class="table-wrap"><table>
     <thead><tr><th>Риск</th><th>Как проявляется</th><th>Решение</th></tr></thead>
     <tbody>
@@ -467,9 +631,10 @@
       <tr><td>Шум датчика</td><td>Картинка «дрожит», горизонтали мигают</td><td>Усреднение по кадрам в софте, стабильное питание адаптера</td></tr>
       <tr><td>Руки над песком</td><td>Ладонь красится как гора</td><td>Фильтр по времени: считается только неподвижная поверхность</td></tr>
       <tr><td>Смещение крепежа</td><td>Карта сдвинута относительно песка</td><td>Жёсткая стойка, контрольная точка, перекалибровка за 10 минут</td></tr>
+      <tr><td>Дети и песок на полу</td><td>Ребёнок встаёт в ящик и тянется к железу; песок вокруг ящика</td><td>Правило «в ящик не залезаем»; датчик и проектор над центром, низ ≈ 1,4 м; коврик вокруг, кабели в канале</td></tr>
       <tr><td>Слабая видеокарта</td><td>Тормозит вода, падает частота кадров</td><td>Дискретная карта; при необходимости отключить воду</td></tr>
       <tr><td>Пыль на объективах</td><td>Мутная проекция, ошибки глубины</td><td>Датчик и проектор выше зоны пыли, регламент протирки</td></tr>
-      <tr><td>Снятые с производства датчики</td><td>Сложно купить новый Kinect</td><td>Рынок б/у велик; форки софта поддерживают современные датчики</td></tr>
+      <tr><td>Датчик Kinect больше не выпускается</td><td>Новый не купить в магазине</td><td>Берём проверенный б/у (предложений много) или современный аналог — Orbbec Femto, Azure Kinect; программа их поддерживает</td></tr>
     </tbody>
   </table></div>
 </div></section>
@@ -477,14 +642,18 @@
 <section id="pitch"><div class="wrap">
   <div class="eyebrow">Сценарий показа</div>
   <h2>Как это выглядит для зрителя</h2>
+  <p class="lead">Ребёнок садится у борта на корточки или на колени и лепит руками или совком. Копнул — ямка стала синей «водой», насыпал — вершина покраснела. Поднял ладонь над горой — пошёл дождь, вода побежала вниз (в режиме с водой). В ящик не залезаем, после игры моем руки.</p>
   <div class="grid-3">
     <div class="tile"><div class="k">1 · Ровный песок</div><p>Вся площадь зелёная, одна-две горизонтали. Ведущий проводит ладонью — карта не реагирует на руку, только на песок.</p></div>
     <div class="tile"><div class="k">2 · Долина и гора</div><p>Выкапываем русло — оно синеет, горизонтали сгущаются на склонах. Насыпаем горку — вершина краснеет.</p></div>
     <div class="tile"><div class="k">3 · Дождь</div><p>Над горой «идёт дождь»: вода стекает по склону, заполняет долину, образует озеро. Прорываем дамбу — озеро уходит.</p></div>
   </div>
-  <div class="grid-2" style="margin-top:1rem">
+  <div class="grid-3" style="margin-top:1rem">
     <div class="tile"><h3>Где применяется</h3>
-      <ul><li>Учебные классы: география, топография, водосборы</li><li>Музеи и научные центры: интерактивный экспонат</li><li>Детские центры и семейные пространства</li><li>Шоурумы и выставки: «магнит» для посетителей</li></ul>
+      <ul><li>Учебные классы: география, топография, водосборы</li><li>Музеи и научные центры: интерактивный экспонат</li><li>Детские центры, сенсорные и реабилитационные комнаты</li><li>Шоурумы и выставки: «магнит» для посетителей</li></ul>
+    </div>
+    <div class="tile sensor"><h3>Безопасность и гигиена</h3>
+      <ul><li>Возраст: с 3 лет вместе со взрослым, с 5–6 лет — самостоятельно</li><li>Песок: сухой просеянный кварцевый или игровой, без пыли; просеивать раз в неделю, менять раз в 6–12 месяцев</li><li>Свет: датчик работает слабым невидимым инфракрасным светом; проектор светит вниз, в глаза с места игры не попадает</li><li>Электрика: всё оборудование выше 1,4 м, кабели в канале, один выключатель у персонала — ребёнок трогает только песок</li><li>Развивает моторику, пространственное мышление, понимание «вода течёт вниз»; подходит для сенсорных занятий</li></ul>
     </div>
     <div class="tile"><h3>Что клиент получает в итоге</h3>
       <ul><li>Готовую установку: короб, стойка, датчик, проектор, компьютер</li><li>Настроенный софт с калибровкой и автозапуском</li><li>Инструкцию для персонала: включение, уход за песком, перекалибровка</li><li>Возможность расширения: игры, режимы, свои палитры</li></ul>
@@ -510,6 +679,12 @@
     return RAMP[RAMP.length - 1][1];
   }
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // подписи колонок для таблиц-карточек на узких экранах
+  document.querySelectorAll(".table-wrap table").forEach(function (tbl) {
+    var heads = Array.prototype.map.call(tbl.querySelectorAll("thead th"), function (th) { return th.textContent.trim(); });
+    tbl.querySelectorAll("tbody tr").forEach(function (tr) { Array.prototype.forEach.call(tr.children, function (td, i) { if (heads[i]) td.setAttribute("data-h", heads[i]); }); });
+  });
 
   // 2D демо
   (function demo2d() {
@@ -652,15 +827,14 @@
     var grid = new THREE.GridHelper(8, 16, 0x3a434d, 0x3a434d); grid.position.y = 0.001; scene.add(grid);
 
     var wood = new THREE.MeshLambertMaterial({ color: 0x8a6a45 });
-    var TOP = 0.78, WALL = 0.25, BOT = TOP - WALL, TH = 0.03;
-    function box(w, hgt, d, x, y, z, mat) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; scene.add(m); return m; }
-    box(1.06, TH, 0.81, 0, BOT - TH / 2, 0, wood);
-    box(1.06, WALL, TH, 0, BOT + WALL / 2, 0.39, wood);
-    box(1.06, WALL, TH, 0, BOT + WALL / 2, -0.39, wood);
-    box(TH, WALL, 0.81, 0.515, BOT + WALL / 2, 0, wood);
-    box(TH, WALL, 0.81, -0.515, BOT + WALL / 2, 0, wood);
-    var legMat = new THREE.MeshLambertMaterial({ color: 0x5c4630 });
-    [[0.48, 0.36], [-0.48, 0.36], [0.48, -0.36], [-0.48, -0.36]].forEach(function (p) { box(0.05, BOT - TH, 0.05, p[0], (BOT - TH) / 2, p[1], legMat); });
+    // короб стоит на полу: борт 250 мм, песок ≈ 150 мм от пола
+    var TOP = 0.285, WALL = 0.25, BOT = TOP - WALL, TH = 0.035;
+    function box(w, hgt, d, x, y, z, mat, parent) { var m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, d), mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; (parent || scene).add(m); return m; }
+    box(1.07, TH, 0.82, 0, BOT - TH / 2, 0, wood);
+    box(1.07, WALL, TH, 0, BOT + WALL / 2, 0.3925, wood);
+    box(1.07, WALL, TH, 0, BOT + WALL / 2, -0.3925, wood);
+    box(TH, WALL, 0.82, 0.5175, BOT + WALL / 2, 0, wood);
+    box(TH, WALL, 0.82, -0.5175, BOT + WALL / 2, 0, wood);
 
     var SX = 80, SZ = 60, sandGeo = new THREE.PlaneGeometry(1.0, 0.75, SX, SZ);
     sandGeo.rotateX(-Math.PI / 2);
@@ -679,19 +853,87 @@
     var sand = new THREE.Mesh(sandGeo, new THREE.MeshLambertMaterial({ vertexColors: true })); sand.receiveShadow = true; scene.add(sand);
     var sandTopY = BOT + 0.11;
 
-    var steel = new THREE.MeshLambertMaterial({ color: 0x6f7a86 });
-    var BEAM_Y = 1.98;
-    box(0.06, BEAM_Y, 0.06, 0, BEAM_Y / 2, -0.62, steel);
-    box(0.06, 0.06, 0.72, 0, BEAM_Y - 0.03, -0.26, steel);
-    box(0.5, 0.03, 0.22, 0, BEAM_Y - 0.075, 0, steel);
-    box(0.06, 0.06, 0.3, 0, 0.03, -0.62, steel); box(0.3, 0.06, 0.06, 0, 0.03, -0.62, steel);
+    // ребёнок ≈ 5 лет на корточках у борта — для масштаба
+    var kidMat = new THREE.MeshLambertMaterial({ color: 0x9aa5b1 });
+    var kid = new THREE.Group(); kid.position.set(0.8, 0, 0.05); kid.scale.set(0.9, 0.9, 0.9); scene.add(kid);
+    var V = function (x, y, z) { return new THREE.Vector3(x, y, z); };
+    function limb(a, b, r) {
+      var v = new THREE.Vector3().subVectors(b, a), len = v.length();
+      var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 12), kidMat);
+      m.position.copy(a).addScaledVector(v, 0.5);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v.normalize());
+      m.castShadow = true; kid.add(m); return m;
+    }
+    function ball(p, r) { var m = new THREE.Mesh(new THREE.SphereGeometry(r, 16, 12), kidMat); m.position.copy(p); m.castShadow = true; kid.add(m); return m; }
+    [-0.09, 0.09].forEach(function (s) {
+      limb(V(-0.1, 0.03, s), V(-0.1, 0.32, s), 0.035);
+      ball(V(-0.1, 0.33, s), 0.045);
+      limb(V(-0.1, 0.33, s), V(0.1, 0.36, s), 0.042);
+      limb(V(-0.17, 0.03, s), V(-0.05, 0.03, s), 0.03);
+    });
+    ball(V(0.1, 0.38, 0), 0.08);
+    limb(V(0.1, 0.38, 0), V(-0.02, 0.66, 0), 0.075);
+    ball(V(-0.04, 0.78, 0), 0.085);
+    [-0.1, 0.1].forEach(function (s) {
+      limb(V(-0.02, 0.64, s), V(-0.18, 0.5, s), 0.028);
+      limb(V(-0.18, 0.5, s), V(-0.36, 0.3, s * 0.6), 0.025);
+      ball(V(-0.37, 0.29, s * 0.6), 0.03);
+    });
 
-    var sensorPos = new THREE.Vector3(0.15, BEAM_Y - 0.125, 0);
-    var projPos = new THREE.Vector3(-0.16, BEAM_Y - 0.14, 0);
+    // датчик и проектор: высоты одни для всех способов крепления
+    var steel = new THREE.MeshLambertMaterial({ color: 0x6f7a86 });
+    var SENSOR_Y = 1.45, PROJ_Y = 1.88;
+    var sensorPos = new THREE.Vector3(0.17, SENSOR_Y, 0);
+    var projPos = new THREE.Vector3(-0.2, PROJ_Y, 0);
     box(0.26, 0.06, 0.07, sensorPos.x, sensorPos.y, sensorPos.z, new THREE.MeshLambertMaterial({ color: 0x37b7c8 }));
     var eye = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 16), new THREE.MeshLambertMaterial({ color: 0x0b2b31 })); eye.position.set(sensorPos.x, sensorPos.y - 0.035, sensorPos.z); scene.add(eye);
     box(0.3, 0.1, 0.24, projPos.x, projPos.y, projPos.z, new THREE.MeshLambertMaterial({ color: 0xf0a64a }));
     var lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 24), new THREE.MeshLambertMaterial({ color: 0x2b2b2b })); lens.position.set(projPos.x, projPos.y - 0.06, projPos.z + 0.05); scene.add(lens);
+
+    // вариант 1: напольная стойка с двумя консолями
+    var gStand = new THREE.Group(); scene.add(gStand);
+    var POST = 2.0;
+    box(0.06, POST, 0.06, 0, POST / 2, -0.62, steel, gStand);
+    box(0.46, 0.06, 0.06, -0.015, PROJ_Y + 0.09, -0.62, steel, gStand);
+    box(0.06, 0.06, 0.62, projPos.x, PROJ_Y + 0.09, -0.31, steel, gStand);
+    box(0.36, 0.03, 0.2, projPos.x, PROJ_Y + 0.065, 0, steel, gStand);
+    box(0.46, 0.06, 0.06, 0.085, SENSOR_Y + 0.06, -0.62, steel, gStand);
+    box(0.06, 0.06, 0.62, sensorPos.x, SENSOR_Y + 0.06, -0.31, steel, gStand);
+    box(0.06, 0.06, 0.5, 0, 0.03, -0.62, steel, gStand); box(0.7, 0.06, 0.06, 0, 0.03, -0.62, steel, gStand);
+
+    // потолок: полупрозрачная плита + крепёж
+    function ceilingSlab(y, group) {
+      var g = new THREE.PlaneGeometry(2.4, 1.9);
+      var slab = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0x8b95a1, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false }));
+      slab.rotation.x = Math.PI / 2; slab.position.y = y; group.add(slab);
+      var edge = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0x8b95a1, transparent: true, opacity: 0.6 }));
+      edge.rotation.x = Math.PI / 2; edge.position.y = y; group.add(edge);
+    }
+    var flangeGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.012, 20);
+    function flange(x, y, z, group) { var m = new THREE.Mesh(flangeGeo, steel); m.position.set(x, y - 0.006, z); group.add(m); }
+    function pipe(x, y1, y2, z, r, group) { var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, y1 - y2, 14), steel); m.position.set(x, (y1 + y2) / 2, z); m.castShadow = true; group.add(m); }
+
+    // вариант 2: потолок 2 м — проектор на кронштейне, датчик на коротком опуске
+    var gC2 = new THREE.Group(); scene.add(gC2); var C2 = 2.0;
+    ceilingSlab(C2, gC2);
+    flange(projPos.x, C2, 0, gC2); pipe(projPos.x, C2, PROJ_Y + 0.06, 0, 0.015, gC2);
+    box(0.34, 0.02, 0.2, projPos.x, PROJ_Y + 0.06, 0, steel, gC2);
+    flange(sensorPos.x, C2, 0, gC2); pipe(sensorPos.x, C2, SENSOR_Y + 0.03, 0, 0.016, gC2);
+
+    // вариант 3: потолок 3 м — штанга с растяжками, проектор на хомуте, датчик внизу
+    var gC3 = new THREE.Group(); scene.add(gC3); var C3 = 3.0;
+    ceilingSlab(C3, gC3);
+    flange(0, C3, 0, gC3); pipe(0, C3, SENSOR_Y + 0.03, 0, 0.024, gC3);
+    box(0.2, 0.03, 0.04, 0.085, SENSOR_Y + 0.045, 0, steel, gC3);
+    box(0.24, 0.03, 0.04, -0.1, PROJ_Y + 0.07, 0, steel, gC3);
+    box(0.34, 0.02, 0.2, projPos.x, PROJ_Y + 0.06, 0, steel, gC3);
+    (function () {
+      var pts = [], a = new THREE.Vector3(0, 1.97, 0);
+      [[0.9, -0.7], [-0.9, -0.7], [0, 0.85]].forEach(function (p) { pts.push(a.x, a.y, a.z, p[0], C3, p[1]); });
+      var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+      gC3.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.7 })));
+      var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 16), steel); collar.position.set(0, 1.97, 0); gC3.add(collar);
+    })();
 
     function cone(from, corners, color) {
       var pts = [];
@@ -703,24 +945,44 @@
     var sensorCone = cone(new THREE.Vector3(sensorPos.x, sensorPos.y - 0.04, sensorPos.z), [[-0.55, sandTopY, -0.42], [0.55, sandTopY, -0.42], [0.55, sandTopY, 0.42], [-0.55, sandTopY, 0.42]], 0x37b7c8);
     var projCone = cone(new THREE.Vector3(projPos.x, projPos.y - 0.07, projPos.z + 0.05), [[-0.53, sandTopY, -0.4], [0.53, sandTopY, -0.4], [0.53, sandTopY, 0.4], [-0.53, sandTopY, 0.4]], 0xf0a64a);
 
-    var spot = new THREE.SpotLight(0xffd9a0, 1.6, 4, 0.58, 0.55, 1.2);
+    var spot = new THREE.SpotLight(0xffd9a0, 1.6, 4, 0.37, 0.55, 1.2);
     spot.position.copy(projPos); spot.target.position.set(0, sandTopY, 0); scene.add(spot); scene.add(spot.target);
 
-    var tS = document.getElementById("tSensor"), tP = document.getElementById("tProj"), tL = document.getElementById("tLight"), tSpin = document.getElementById("tSpin");
+    // переключатель крепления
+    var goal = { ty: 0.95, r: 3.6, phi: 1.12 };
+    var mounts = { stand: gStand, c2: gC2, c3: gC3 };
+    var camGoal = { stand: { ty: 0.95, r: 3.6, phi: 1.12 }, c2: { ty: 1.0, r: 3.7, phi: 1.12 }, c3: { ty: 1.4, r: 5.0, phi: 1.3 } };
+    var dimsText = {
+      stand: "напольная стойка ≈ 2,0 м<br>датчик 1,45 м · проектор 1,9 м от пола<br>ящик на полу: борт 0,28 м · песок ≈ 0,15 м",
+      c2: "потолок 2,0 м<br>проектор — на потолке, обычный объектив<br>датчик — на опуске 0,5 м · низ ≈ 1,4 м",
+      c3: "потолок 3,0 м<br>штанга 1,5 м с растяжками<br>проектор на хомуте 1,9 м · датчик внизу 1,45 м"
+    };
+    var dimsEl = stage.querySelector(".dims");
+    function setMount(m) {
+      Object.keys(mounts).forEach(function (k) { mounts[k].visible = (k === m); });
+      goal.ty = camGoal[m].ty; goal.r = camGoal[m].r; goal.phi = camGoal[m].phi;
+      if (dimsEl) dimsEl.innerHTML = dimsText[m];
+    }
+    var mountBtns = Array.prototype.slice.call(document.querySelectorAll("#mountTools [data-mount]"));
+    mountBtns.forEach(function (b) { b.addEventListener("click", function () { mountBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); setMount(b.getAttribute("data-mount")); }); });
+    setMount("stand");
+
+    var tS = document.getElementById("tSensor"), tP = document.getElementById("tProj"), tL = document.getElementById("tLight"), tK = document.getElementById("tKid"), tSpin = document.getElementById("tSpin");
     if (reduceMotion) { tSpin.checked = false; }
     tS.addEventListener("change", function () { sensorCone.visible = tS.checked; });
     tP.addEventListener("change", function () { projCone.visible = tP.checked; });
     tL.addEventListener("change", function () { spot.visible = tL.checked; });
+    tK.addEventListener("change", function () { kid.visible = tK.checked; });
     tSpin.addEventListener("change", function () { orbit.spin = tSpin.checked; });
 
     var drag = false, lx = 0, ly = 0, pinch = 0;
     canvas.addEventListener("pointerdown", function (e) { drag = true; lx = e.clientX; ly = e.clientY; orbit.spin = false; tSpin.checked = false; canvas.setPointerCapture(e.pointerId); });
-    canvas.addEventListener("pointermove", function (e) { if (!drag) return; orbit.theta -= (e.clientX - lx) * 0.008; orbit.phi = Math.max(0.35, Math.min(1.45, orbit.phi - (e.clientY - ly) * 0.006)); lx = e.clientX; ly = e.clientY; });
+    canvas.addEventListener("pointermove", function (e) { if (!drag) return; orbit.theta -= (e.clientX - lx) * 0.008; orbit.phi = Math.max(0.35, Math.min(1.45, orbit.phi - (e.clientY - ly) * 0.006)); goal.phi = orbit.phi; lx = e.clientX; ly = e.clientY; });
     canvas.addEventListener("pointerup", function () { drag = false; });
     canvas.addEventListener("pointercancel", function () { drag = false; });
-    canvas.addEventListener("wheel", function (e) { e.preventDefault(); orbit.r = Math.max(1.6, Math.min(7, orbit.r * (1 + e.deltaY * 0.0012))); }, { passive: false });
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); orbit.r = Math.max(1.6, Math.min(7, orbit.r * (1 + e.deltaY * 0.0012))); goal.r = orbit.r; }, { passive: false });
     canvas.addEventListener("touchstart", function (e) { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive: true });
-    canvas.addEventListener("touchmove", function (e) { if (e.touches.length === 2 && pinch) { var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); orbit.r = Math.max(1.6, Math.min(7, orbit.r * pinch / d)); pinch = d; } }, { passive: true });
+    canvas.addEventListener("touchmove", function (e) { if (e.touches.length === 2 && pinch) { var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); orbit.r = Math.max(1.6, Math.min(7, orbit.r * pinch / d)); goal.r = orbit.r; pinch = d; } }, { passive: true });
 
     function resize() {
       var w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
@@ -730,7 +992,11 @@
     resize();
     bindFullscreen(stage, document.getElementById("fsBtn1"));
 
-    function animate() { if (orbit.spin) orbit.theta += 0.0035; updateCam(); renderer.render(scene, camera); requestAnimationFrame(animate); }
+    function animate() {
+      if (orbit.spin) orbit.theta += 0.0035;
+      target.y += (goal.ty - target.y) * 0.08; if (!drag) { orbit.r += (goal.r - orbit.r) * 0.08; orbit.phi += (goal.phi - orbit.phi) * 0.08; }
+      updateCam(); renderer.render(scene, camera); requestAnimationFrame(animate);
+    }
     animate();
   })();
 
@@ -860,7 +1126,7 @@
     // сетка высот: 200 × 150 ячеек, ячейка ≈ 5 мм
     var W = 200, H = 150, N = W * H, CELL = 1.0 / (W - 1);
     var h = new Float32Array(N), dh = new Float32Array(N);
-    var TOP = 0.78, WALL = 0.25, BOT = TOP - WALL, TH = 0.035, WALL_H = WALL - 0.015;
+    var TOP = 0.285, WALL = 0.25, BOT = TOP - WALL, TH = 0.035, WALL_H = WALL - 0.015;
     var REPOSE = Math.tan(33 * Math.PI / 180) * CELL, REPOSE_D = REPOSE * Math.SQRT2;
     var HSCALE = 0.20;
 
@@ -874,7 +1140,7 @@
     window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function () { scene.background = new THREE.Color(bgColor()); });
 
     var camera = new THREE.PerspectiveCamera(38, 16 / 10, 0.05, 30);
-    var target = new THREE.Vector3(0, 0.62, 0);
+    var target = new THREE.Vector3(0, 0.13, 0);
     var orbit = { theta: 0.55, phi: 0.92, r: 1.55, spin: false };
     function updateCam() {
       camera.position.set(target.x + orbit.r * Math.sin(orbit.phi) * Math.sin(orbit.theta), target.y + orbit.r * Math.cos(orbit.phi), target.z + orbit.r * Math.sin(orbit.phi) * Math.cos(orbit.theta));
@@ -914,7 +1180,7 @@
     var key = new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(1.4, 2.6, 0.9); key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048); key.shadow.camera.left = -1; key.shadow.camera.right = 1; key.shadow.camera.top = 1; key.shadow.camera.bottom = -1; key.shadow.camera.near = 0.5; key.shadow.camera.far = 6; key.shadow.bias = -0.0005;
     scene.add(key);
-    var spot = new THREE.SpotLight(0xffffff, 1.4, 5, 0.62, 0.6, 1.0); spot.position.set(-0.1, 2.1, 0.05); spot.target.position.set(0, 0.6, 0); scene.add(spot); scene.add(spot.target);
+    var spot = new THREE.SpotLight(0xffffff, 1.4, 5, 0.45, 0.6, 1.0); spot.position.set(-0.1, 1.9, 0.05); spot.target.position.set(0, 0.15, 0); scene.add(spot); scene.add(spot.target);
 
     var floor = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshLambertMaterial({ color: 0x2a3138 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 
@@ -923,7 +1189,6 @@
     slab(1.07, TH, 0.82, 0, BOT - TH / 2, 0);
     slab(1.07, WALL, TH, 0, BOT + WALL / 2, 0.3925); slab(1.07, WALL, TH, 0, BOT + WALL / 2, -0.3925);
     slab(TH, WALL, 0.82, 0.5175, BOT + WALL / 2, 0); slab(TH, WALL, 0.82, -0.5175, BOT + WALL / 2, 0);
-    [[0.48, 0.36], [-0.48, 0.36], [0.48, -0.36], [-0.48, -0.36]].forEach(function (p) { slab(0.05, BOT - TH, 0.05, p[0], (BOT - TH) / 2, p[1]); });
 
     var geo = new THREE.PlaneGeometry(1.0, 0.75, W - 1, H - 1); geo.rotateX(-Math.PI / 2);
     var pos = geo.attributes.position, colors = new Float32Array(N * 3);
