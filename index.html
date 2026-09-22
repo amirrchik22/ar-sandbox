@@ -168,6 +168,15 @@
   .scheme { padding: 1rem; }
   .scheme .cap { font-family: "Manrope", sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: .5rem; }
   .scheme svg { width: 100%; height: auto; display: block; font-family: "Golos Text", sans-serif; }
+  .scheme.wall { overflow-x: auto; }
+  .scheme.wall svg { min-width: 460px; }
+  @media (max-width: 560px) {
+    .scheme.wall::after, .card.diagram::after {
+      content: "Схему можно прокрутить вбок и увеличить пальцами";
+      display: block; position: sticky; left: 0;
+      font-size: .75rem; color: var(--muted); margin-top: .5rem;
+    }
+  }
   .scheme .slab { fill: url(#hatchA); color: var(--line-strong); }
   .scheme .floor { stroke: var(--line-strong); stroke-width: 2; }
   .scheme .wood { fill: #8a6a45; }
@@ -262,7 +271,7 @@
   <div class="grid-3" style="margin-top:1.2rem">
     <div class="tile"><h3>Что это</h3><p>Ящик с песком на полу, над ним датчик и проектор. Ребёнок лепит рельеф руками, а на песок проецируется живая карта: вода, равнины, горы.</p></div>
     <div class="tile"><h3>Для кого</h3><p>Детские центры, музеи и научные площадки, школьная география, сенсорные и реабилитационные комнаты, шоурумы и выставки.</p></div>
-    <div class="tile"><h3>Что нужно от вас</h3><p>Место ≈ 2,5 × 2,5 м с возможностью приглушить свет, розетка 220 В, бетонный потолок для подвеса — или ставим напольную стойку без сверления. Монтаж и настройка — наша работа; персонал включает всё одним выключателем.</p></div>
+    <div class="tile"><h3>Что нужно от вас</h3><p>Место у стены из бетона или кирпича (ящик встаёт вплотную к ней), возможность приглушить свет, розетка 220 В. Натяжной потолок не помеха: всё крепим только к стене, потолок не трогаем; высота потолка от 2,35 м. Монтаж и настройка — наша работа; персонал включает всё одним выключателем.</p></div>
   </div>
 </div></section>
 
@@ -273,14 +282,14 @@
   <div class="grid-3">
     <div class="tile sensor"><div class="k">01 · Датчик глубины</div>
       <p>Висит над центром ящика и смотрит вниз. Невидимым инфракрасным светом измеряет расстояние до каждой точки песка — получается карта высот.</p>
-      <ul><li class="spec">30 кадров/с</li><li class="spec">точность по высоте ≈ 2–5 мм на рабочей дистанции</li></ul>
+      <ul><li class="spec">30 кадров/с</li><li class="spec">шум по высоте ≈ 3 мм (Kinect v1 на 1,2 м)</li></ul>
     </div>
     <div class="tile pc"><div class="k">02 · Компьютер</div>
       <p>Убирает дрожание и руки, отсчитывает высоту от дна ящика и каждой высоте назначает цвет: низ — синий, верх — красный. Рисует линии-горизонтали, при желании — воду.</p>
-      <ul><li class="spec">задержка цикла ≈ 60–120 мс</li><li class="spec">расчёт на видеокарте</li></ul>
+      <ul><li class="spec">задержка цикла ≈ 120–150 мс — рука двинулась, картинка перерисовалась</li><li class="spec">расчёт на видеокарте</li></ul>
     </div>
     <div class="tile proj"><div class="k">03 · Проектор</div>
-      <p>Закреплён рядом с датчиком, светит на ту же область. Изображение откалибровано так, что каждая точка карты попадает ровно на «свой» участок песка.</p>
+      <p>Закреплён на стене выше датчика, светит на ту же область. Изображение откалибровано так, что каждая точка карты попадает ровно на «свой» участок песка.</p>
       <ul><li class="spec">формат 4:3 под ящик 1000×750 мм</li><li class="spec">затемнённое помещение — контраст выше</li></ul>
     </div>
   </div>
@@ -297,16 +306,16 @@
 <section id="model"><div class="wrap">
   <div class="eyebrow">Конструкция</div>
   <h2>Интерактивная 3D-модель установки</h2>
-  <p class="lead">Ящик стоит на полу — ребёнок сидит на корточках и играет руками. Вращай мышью, приближай колёсиком, переключай способ крепления. Бирюзовые лучи — поле зрения датчика, янтарные — луч проектора. Оба накрывают весь ящик с запасом.</p>
+  <p class="lead">Ящик стоит на полу вплотную к стене — ребёнок сидит на корточках и играет руками. Вращай мышью, приближай колёсиком, переключай способ крепления: основной — к стене, запасной — напольная стойка. Бирюзовые лучи — поле зрения датчика, янтарные — луч проектора. Оба накрывают весь ящик с запасом.</p>
   <div class="card model">
     <div class="stage">
-      <canvas id="scene3d" aria-label="3D-модель: ящик с песком на полу, ребёнок для масштаба, датчик и проектор на напольной стойке или на потолочном подвесе"></canvas>
+      <canvas id="scene3d" aria-label="3D-модель: ящик с песком на полу, ребёнок для масштаба, датчик и проектор на настенном креплении или на напольной стойке"></canvas>
       <button class="btn fsbtn" id="fsBtn1" type="button">На весь экран</button>
-      <div class="dims">напольная стойка ≈ 2,0 м<br>датчик 1,45 м · проектор 1,9 м от пола<br>ящик на полу: борт 0,28 м · песок ≈ 0,15 м</div>
+      <div class="dims">крепление к стене: рейка 40×40 + Г-консоль<br>датчик 1,35 м · объектив проектора 1,95 м от пола<br>ящик у стены: центр 413 мм от стены · песок 0,15 м</div>
       <div class="legend">
         <span><i style="background:#8a6a45"></i>Короб из фанеры на полу</span>
         <span><i style="background:linear-gradient(90deg,var(--e0),var(--e2),var(--e5))"></i>Песок, окрашен по высоте</span>
-        <span><i style="background:#6f7a86"></i>Стойка или подвес</span>
+        <span><i style="background:#6f7a86"></i>Стена, рейка и консоль</span>
         <span><i style="background:var(--sensor)"></i>Датчик глубины</span>
         <span><i style="background:var(--proj)"></i>Проектор</span>
         <span><i style="background:#9aa5b1"></i>Ребёнок ≈ 5 лет, для масштаба</span>
@@ -314,9 +323,8 @@
     </div>
     <div class="toolbar" id="mountTools" aria-label="Способ крепления">
       <span class="range">Крепление:</span>
-      <button class="btn" data-mount="stand" aria-pressed="true" type="button">Напольная стойка</button>
-      <button class="btn" data-mount="c2" aria-pressed="false" type="button">Потолок 2 м</button>
-      <button class="btn" data-mount="c3" aria-pressed="false" type="button">Потолок 3 м</button>
+      <button class="btn" data-mount="wall" aria-pressed="true" type="button">У стены</button>
+      <button class="btn" data-mount="stand" aria-pressed="false" type="button">Напольная стойка</button>
     </div>
     <div class="toggles">
       <label><input type="checkbox" id="tSensor" checked> поле зрения датчика</label>
@@ -350,7 +358,7 @@
           <path d="M9 28 L4 44 M21 28 V44 M33 28 L38 44"/>
         </g>
         <text class="t" x="78" y="42">Датчик глубины</text>
-        <text class="small" x="78" y="66">сенсор Kinect v1 / v2</text>
+        <text class="small" x="78" y="66">Kinect v1 · запасной — v2</text>
         <text class="small" x="78" y="86">над песком, ось вниз</text>
       </g>
 
@@ -380,7 +388,7 @@
         <text class="small" x="78" y="66">дискретная видеокарта</text>
         <text class="small" x="78" y="86">прямой разъём USB</text>
         <text class="small" x="78" y="106">выход HDMI</text>
-        <text class="small" x="78" y="126">Windows 10/11 или Linux</text>
+        <text class="small" x="78" y="126">Ubuntu 24.04 (этап 0 — Windows)</text>
       </g>
 
       <!-- Проектор -->
@@ -392,8 +400,8 @@
           <path d="M40 14 L54 8 M40 24 L54 30"/>
         </g>
         <text class="t" x="78" y="42">Проектор</text>
-        <text class="small" x="78" y="66">над песком, рядом с датчиком</text>
-        <text class="small" x="78" y="86">второй экран, ручной фокус</text>
+        <text class="small" x="78" y="66">на стене выше датчика</text>
+        <text class="small" x="78" y="86">второй экран · game mode</text>
       </g>
 
       <!-- Сетевой фильтр -->
@@ -420,15 +428,15 @@
   <div class="grid-2" style="margin-top:1rem">
     <div class="tile"><h3>Правила по кабелям</h3>
       <ul>
-        <li>Датчик — напрямую в разъём USB на задней стенке компьютера, без разветвителей: ему нужен быстрый порт (USB 3.0 для Kinect v2) и ровное питание.</li>
-        <li>USB до 3 м. Если стойка выше — активный удлинитель.</li>
+        <li>Датчик — напрямую в разъём USB на задней стенке компьютера, без разветвителей. Kinect v1 — USB 2.0 плюс блок питания 12 В; запасной Kinect v2 — USB 3.0 (контроллер Intel или Renesas).</li>
+        <li>USB до 3 м. Если до тумбы с компьютером дальше — активный удлинитель.</li>
         <li>Кабель HDMI до 10 м без проблем. Проектор подключён как <b>второй экран</b> компьютера.</li>
         <li>Все три потребителя — через один сетевой фильтр с выключателем: включил — заработало.</li>
       </ul>
     </div>
     <div class="tile"><h3>Что настраивается один раз</h3>
       <ul>
-        <li>Проектор: резкость наводится вручную; автоматическое выравнивание картинки в самом проекторе отключено — этим занимается программа.</li>
+        <li>Проектор: резкость наводится вручную; включён режим низкой задержки (game mode), автокоррекция трапеции и интерполяция кадров выключены — геометрию картинки правит программа.</li>
         <li>Компьютер: автозапуск программы при включении, отключение спящего режима, показ только на проекторе.</li>
         <li>Датчик: жёстко закреплён, ось вниз. Любое смещение после калибровки — перекалибровка.</li>
       </ul>
@@ -442,13 +450,13 @@
   <div class="table-wrap"><table>
     <thead><tr><th>Узел</th><th>Что именно</th><th>Ключевые требования</th></tr></thead>
     <tbody>
-      <tr><td><b>Датчик глубины</b></td><td>Microsoft Kinect v1 (Xbox 360) или Kinect v2 (Xbox One) с адаптером для ПК</td><td class="spec">v1: 640×480, поле 57°×43°, дистанция 0,8–4 м, USB 2.0<br>v2: 512×424, измеряет время пролёта света (точнее v1), поле 70°×60°, USB 3.0<br>современные аналоги — Azure Kinect, Orbbec Femto, Intel RealSense — поддерживаются доработанными версиями программы</td></tr>
-      <tr><td><b>Проектор</b></td><td>DLP или LCD, формат 4:3 (под пропорции ящика); 16:10 допустим с запасом по ширине</td><td class="spec">яркость от 3000 лм для обычного зала<br>обычный объектив (проекционное отношение ≈ 1,5) — высота ≈ 1,7 м над песком<br>разрешение 1024×768 и выше · ручной фокус</td></tr>
-      <tr><td><b>Компьютер</b></td><td>Стационарный ПК или мощный ноутбук</td><td class="spec">дискретная видеокарта NVIDIA / AMD среднего уровня<br>порт USB 3.0, выход HDMI · 8 ГБ ОЗУ<br>Windows 10/11 (Magic Sand) или Linux (SARndbox)</td></tr>
-      <tr><td><b>Короб</b></td><td>Фанера 15–18 мм, внутренний размер 1000×750 мм, стоит на полу</td><td class="spec">высота борта 250–300 мм · углы на шкантах/уголках · стык герметиком<br>без ножек: ребёнок сидит на корточках или на коленях и играет руками<br>снизу войлок или резина, вокруг — коврик под просыпанный песок</td></tr>
+      <tr><td><b>Датчик глубины</b></td><td>Базовый — Microsoft Kinect v1 (Xbox 360) с адаптером для ПК. Запасной — Kinect v2 (Xbox One), если v1 не даст нужного качества или отклика. Конструкция одна для обоих</td><td class="spec">v1: 640×480, поле 57°×43°, дистанция 0,8–4 м, USB 2.0 + блок 12 В; на 1,2 м видит 1,30×0,95 м, 2,0 мм на пиксель, шум по высоте ≈ 3 мм<br>v2: 512×424, поле 70°×60°, USB 3.0 (контроллер Intel/Renesas); на 1,3 м видит 1,82×1,50 м<br>современные аналоги (Orbbec, RealSense) — в будущем, через общий интерфейс программы</td></tr>
+      <tr><td><b>Проектор</b></td><td>Средний сегмент, 3LCD или DLP; XGA 1024×768 (4:3, под пропорции ящика) или WXGA 1280×800 (16:10, с запасом по ширине)</td><td class="spec">3300–4000 лм · обычный объектив (проекционное отношение 1,3–1,6, зум) · ручной фокус · HDMI<br>обязательно: в паспорте разрешена установка объективом вниз (360° / вертикальная проекция); если нет — зеркало 45° под горизонтальный проектор<br>режим низкой задержки (game mode), автокоррекция трапеции и интерполяция кадров выключены<br>выход горячего воздуха — в сторону от натяжного потолка</td></tr>
+      <tr><td><b>Компьютер</b></td><td>Стационарный ПК или мощный ноутбук</td><td class="spec">дискретная видеокарта NVIDIA / AMD среднего уровня<br>порт USB 2.0 (v1) или USB 3.0 (v2), выход HDMI · 8 ГБ ОЗУ<br>этап 0 — Windows 10/11 с Magic Sand; установка — Ubuntu 24.04 в режиме киоска с собственной программой</td></tr>
+      <tr><td><b>Короб</b></td><td>Фанера 18 мм, внутри 1000×750 мм (рекомендуем глубину 600), стоит на полу вплотную к стене длинной стороной</td><td class="spec">борт 250 мм · зазор 20 мм под плинтус · углы на шкантах/уголках · стык герметиком<br>без ножек: ребёнок сидит на корточках или на коленях и играет руками<br>снизу войлок или резина, вокруг — коврик под просыпанный песок</td></tr>
       <tr><td><b>Песок</b></td><td>Мелкий просеянный, сухой (кварцевый / игровой)</td><td class="spec">слой 100–150 мм → объём ≈ 90–110 л<br>светлый песок даёт более яркую проекцию</td></tr>
-      <tr><td><b>Стойка или подвес</b></td><td>Напольная стойка с двумя консолями над центром ящика — или крепление к потолку (раздел «Крепление»)</td><td class="spec">брус 50×50 / профиль 40×40 / труба 40–50 мм<br>датчик ≈ 1,45 м, проектор ≈ 1,9 м от пола · всё железо над центром ящика<br>жёсткость: датчик и проектор не должны качаться · площадка с регулировкой наклона</td></tr>
-      <tr><td><b>Мелочи</b></td><td>Кабели, крепёж, сетевой фильтр, калибровочный диск</td><td class="spec">USB-удлинитель активный при длине > 3 м<br>белый плоский диск ⌀ 15–20 см для калибровки проектора</td></tr>
+      <tr><td><b>Крепление к стене</b></td><td>Стальная рейка 40×40 на трёх анкерах M8, Г-образная консоль под датчик, универсальный кронштейн проектора на своей пластине (раздел «Крепление»). Запасной вариант — напольная стойка 2,0 м без сверления</td><td class="spec">датчик 1,35 м, объектив проектора 1,95 м от пола · датчик над центром ящика<br>консоль и датчик вне луча проектора · страховочный тросик<br>жёсткость: датчик и проектор не должны качаться · площадка с регулировкой наклона</td></tr>
+      <tr><td><b>Мелочи</b></td><td>Кабели, крепёж, сетевой фильтр, калибровочный диск</td><td class="spec">USB-удлинитель активный при длине > 3 м · кабель-канал 40×25 и 25×16<br>белый плоский диск ⌀ 15–20 см для калибровки проектора</td></tr>
     </tbody>
   </table></div>
 </div></section>
@@ -460,123 +468,200 @@
     <div class="tile sensor"><h3>Датчик</h3>
       <p>Ось строго вертикально, над центром ящика. Чем выше датчик, тем шире зона, но грубее измерение. Для инженера — ширина зоны на высоте H:</p>
       <div class="formula">W = 2 · H · tan(угол обзора / 2)</div>
-      <p class="spec">Kinect v1 (57°): H = 1,0 м → зона 1,09 × 0,79 м — ящик 1,0 × 0,75 накрыт с запасом.<br>Kinect v2 (70°): H = 0,8 м → зона 1,12 × 0,92 м.</p>
-      <p>Рабочая рекомендация: <b>1,0–1,3 м над поверхностью песка</b>. Ниже — детальнее, но края могут не влезть; выше — грубее по высоте.</p>
+      <p class="spec">Kinect v1 (57°×43°, базовый): H = 1,20 м → зона 1,30 × 0,95 м — ящик 1,0 × 0,75 накрыт с запасом; 2,0 мм на пиксель, шум по высоте ≈ 3 мм.<br>Kinect v2 (70°×60°, запасной): H = 1,30 м → зона 1,82 × 1,50 м.</p>
+      <p>Рабочая высота: <b>Kinect v1 — 1,20 м над песком (1,35 м от пола)</b>, Kinect v2 — 1,30 м (1,45 м от пола). Ниже — детальнее, но края могут не влезть; выше — грубее по высоте.</p>
     </div>
     <div class="tile proj"><h3>Проектор</h3>
-      <p>Высота проектора зависит от объектива: обычный объектив даёт картинку шириной 1,1 м с высоты ≈ 1,7 м. Для инженера — дистанция до песка:</p>
+      <p>Высота проектора зависит от объектива: обычный объектив (отношение 1,5) даёт картинку шириной 1,2 м с высоты 1,8 м над песком. Для инженера — дистанция до песка:</p>
       <div class="formula">D = проекционное отношение · ширина картинки</div>
-      <p class="spec">Картинка 1,1 м (чуть шире ящика) → отношение 1,5 даёт D = 1,65 м над песком, ≈ 1,8 м от пола. Короткофокусный 0,6 дал бы всего 0,66 м — низко над детьми, не наш случай.</p>
-      <p>Проектор висит выше датчика, со смещением 25–35 см в сторону, чтобы датчик не попадал в луч; наклон и трапеция компенсируются калибровкой. Изображение делаем чуть шире ящика — края обрезаются программно.</p>
+      <p class="spec">Картинка 1,2 × 0,9 м (чуть шире ящика) → отношение 1,5 даёт D = 1,80 м над песком: объектив на 1,95 м от пола и 80 мм от стены, наклон к стене 2,5°. На песке картинка занимает 0…882 мм от стены, 1,2 мм на пиксель. Короткофокусный объектив не берём — низко над детьми и капризен к геометрии.</p>
+      <p>Проектор висит на стене по центру ящика, выше датчика; датчик отведён от луча Г-образной консолью, поэтому тени на песке нет. Геометрию картинки правит программа, цифровую трапецию в проекторе выключаем. Изображение делаем чуть шире ящика — края обрезаются программно.</p>
     </div>
   </div>
-  <div class="note" style="margin-top:1rem">Ящик стоит на полу: песок ≈ 0,15 м от пола. Датчик: 0,15 + 1,0–1,3 ⇒ <b>1,15–1,45 м от пола</b>. Проектор с обычным объективом: 0,15 + ≈ 1,7 ⇒ <b>≈ 1,85 м от пола</b>. Помещается под потолок 2 м — на напольной стойке или на подвесе, см. раздел «Крепление».</div>
+  <div class="note" style="margin-top:1rem">Ящик стоит на полу вплотную к стене: песок 0,15 м от пола, центр ящика 413 мм от стены (для глубины 600 — 338). Датчик Kinect v1: 0,15 + 1,20 ⇒ <b>1,35 м от пола</b> (v2: 1,45 м). Проектор с обычным объективом: 0,15 + 1,80 ⇒ <b>объектив 1,95 м от пола</b>, верх корпуса ≈ 2,28 м. Потолок нужен не ниже 2,35 м; если ниже — проектор опускаем до 1,85 м и берём объектив с отношением 1,4. Как всё крепится — раздел «Крепление».</div>
 </div></section>
 
 <section id="mount"><div class="wrap">
-  <div class="eyebrow">Крепление к потолку</div>
-  <h2>Два варианта подвеса: потолок 2 м и потолок 3 м и выше</h2>
-  <p class="lead">Песочница стоит на полу, поэтому датчик в любом случае должен висеть низко — 1,0–1,3 м над песком. Проектор висит там, где его картинка ровно накрывает ящик. Всё железо — над центром ящика, где никто не ходит.</p>
+  <div class="eyebrow">Крепление к стене</div>
+  <h2>Всё железо — на стене: рейка, Г-образная консоль и кронштейн проектора</h2>
+  <p class="lead">Ящик стоит на полу вплотную к стене. К потолку не крепим ничего — у заказчика натяжной потолок. Датчик висит над центром ящика на консоли, проектор — на своей пластине по центру ящика выше датчика. Консоль отведена в сторону от луча проектора, поэтому тени на песке нет.</p>
   <div class="grid-2">
-    <div class="card scheme">
-      <div class="cap">Потолок 2,0–2,5 м</div>
-      <svg viewBox="0 0 520 470" role="img" aria-label="Потолок 2 метра: проектор на кронштейне прямо на потолке, датчик глубины на опуске полметра, песочница стоит на полу, рядом ребёнок на корточках">
-        <defs><pattern id="hatchA" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="1"/></pattern></defs>
-        <rect class="slab" x="20" y="146" width="480" height="14"/><line class="floor" x1="20" y1="160" x2="500" y2="160"/>
-        <rect class="slab" x="20" y="420" width="480" height="14"/><line class="floor" x1="20" y1="420" x2="500" y2="420"/>
-        <polygon class="beam-fill" points="174,183 124,400 276,400"/>
-        <line class="beam" x1="174" y1="183" x2="124" y2="400"/><line class="beam" x1="174" y1="183" x2="276" y2="400"/>
-        <polygon class="fov-fill" points="222,237 132,400 312,400"/>
-        <line class="fov" x1="222" y1="237" x2="132" y2="400"/><line class="fov" x1="222" y1="237" x2="312" y2="400"/>
-        <path class="sandf" d="M135 416 V402 Q160 393 185 400 T235 398 T265 404 V416 Z"/>
-        <rect class="wood" x="131" y="383" width="4" height="37"/><rect class="wood" x="265" y="383" width="4" height="37"/><rect class="wood" x="131" y="416" width="138" height="4"/>
-        <circle class="kid-head" cx="298" cy="340" r="10.5"/>
-        <path class="kid" d="M296 354 L318 392 L290 394 L296 418 M288 418 H305 M296 356 L278 372 L256 393"/>
-        <rect class="steel" x="163" y="160" width="22" height="4"/><rect class="steel" x="172" y="164" width="4" height="6"/>
-        <rect class="proj" x="155" y="169" width="39" height="13" rx="3"/><circle class="dark" cx="174" cy="183" r="2.6"/>
-        <rect class="steel" x="211" y="160" width="22" height="4"/><rect class="steel" x="220" y="164" width="4" height="64"/>
-        <rect class="sensor" x="205" y="228" width="34" height="8" rx="2"/><circle class="dark" cx="222" cy="237" r="1.6"/>
-        <line class="ext" x1="239" y1="237" x2="356" y2="237"/><line class="ext" x1="194" y1="183" x2="388" y2="183"/><line class="ext" x1="269" y1="400" x2="388" y2="400"/>
-        <line class="dim" x1="352" y1="237" x2="352" y2="400"/><line class="dim" x1="348" y1="237" x2="356" y2="237"/><line class="dim" x1="348" y1="400" x2="356" y2="400"/>
-        <text class="small" transform="translate(347 318) rotate(-90)" text-anchor="middle">датчик 1,3 м</text>
-        <line class="dim" x1="384" y1="183" x2="384" y2="400"/><line class="dim" x1="380" y1="183" x2="388" y2="183"/><line class="dim" x1="380" y1="400" x2="388" y2="400"/>
-        <text class="small" transform="translate(379 291) rotate(-90)" text-anchor="middle">проектор 1,7 м</text>
-        <line class="dim" x1="416" y1="160" x2="416" y2="420"/><line class="dim" x1="412" y1="160" x2="420" y2="160"/><line class="dim" x1="412" y1="420" x2="420" y2="420"/>
-        <text class="small" transform="translate(411 290) rotate(-90)" text-anchor="middle">потолок 2,0 м</text>
-        <text class="small" x="200" y="140" text-anchor="middle">фланец + 4 анкера в бетон</text>
-        <text class="small" x="118" y="171" text-anchor="end">потолочный</text><text class="small" x="118" y="185" text-anchor="end">кронштейн</text>
-        <line class="ldr" x1="122" y1="176" x2="153" y2="176"/>
-        <text class="small" x="240" y="199">опуск 0,5 м</text><text class="small" x="240" y="213">труба 25–32 мм</text>
-        <line class="ldr" x1="226" y1="205" x2="236" y2="205"/>
-        <text class="small" x="240" y="252">низ железа</text><text class="small" x="240" y="266">≈ 1,4 м от пола</text>
-        <text class="small" x="118" y="368" text-anchor="end">картинка</text><text class="small" x="118" y="382" text-anchor="end">≈ 1,1–1,3 м</text>
-        <text class="small" x="118" y="405" text-anchor="end">песок 0,15 м</text>
-        <text class="small" x="260" y="455" text-anchor="middle">песочница на полу · ребёнок ≈ 5 лет на корточках</text>
+    <div class="card scheme wall">
+      <div class="cap">Вид сбоку</div>
+      <svg role="img" aria-label="Вид сбоку: ящик с песком стоит на полу вплотную к стене, на стене рейка с Г-образной консолью, датчик над центром ящика на 1,35 м от пола, проектор на пластине выше, объектив на 1,95 м, ребёнок у переднего борта" viewBox="0 0 760 668" font-family="Helvetica, Arial, sans-serif" font-size="11">
+      <defs><pattern id="hatchS" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#9aa5b1" stroke-width="1"/></pattern></defs>
+      <rect x="38" y="0" width="22" height="560" fill="url(#hatchS)" stroke="#6f7a86"/>
+      <rect x="38" y="560" width="720" height="14" fill="url(#hatchS)" stroke="#6f7a86"/>
+      <line style="stroke:var(--line-strong)" x1="60" y1="0" x2="60" y2="560" stroke-width="2"/>
+      <line style="stroke:var(--line-strong)" x1="38" y1="560" x2="740" y2="560" stroke-width="2"/>
+      <rect x="60" y="545.6" width="4.8" height="14.4" fill="#c9c2b5" stroke="#6f7a86"/>
+      <polygon points="79.2,92.0 60.0,524.0 271.7,524.0" fill="#f0a64a" opacity="0.12"/>
+      <line x1="79.2" y1="92.0" x2="60.0" y2="524.0" stroke="#c77a1d" stroke-width="1.3"/>
+      <line x1="79.2" y1="92.0" x2="271.7" y2="524.0" stroke="#c77a1d" stroke-width="1.3"/>
+      <polygon points="159.1,236.0 60,487.6 60,524.0 272.6,524.0" fill="#1a8c9c" opacity="0.08"/>
+      <line x1="159.1" y1="236.0" x2="60" y2="487.6" stroke="#1a8c9c" stroke-width="1.3" stroke-dasharray="5 3"/>
+      <line x1="159.1" y1="236.0" x2="272.6" y2="524.0" stroke="#1a8c9c" stroke-width="1.3" stroke-dasharray="5 3"/>
+      <path d="M69.1 555.7 V524.0 Q112.8 516.8 148.8 524.0 T208.8 526.4 T249.1 524.0 V555.7 Z" fill="#d9c79a"/>
+      <rect x="64.8" y="555.7" width="188.6" height="4.3" fill="#8a6a45"/>
+      <rect x="64.8" y="495.7" width="4.3" height="60.0" fill="#8a6a45"/>
+      <rect x="249.1" y="495.7" width="4.3" height="60.0" fill="#8a6a45"/>
+      <circle cx="281.1" cy="412.3" r="19.4" fill="#9aa5b1"/>
+      <path d="M277.4 438.2 L318.1 508.3 L266.4 512.0 L277.4 556.3 M262.7 556.3 L294.1 556.3 M277.4 441.8 L244.2 471.4 L203.6 510.2" stroke="#9aa5b1" stroke-width="16.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <rect x="60" y="8.0" width="9.6" height="230.4" fill="#6f7a86"/>
+      <rect x="60" y="214.4" width="108.7" height="9.6" fill="#6f7a86"/>
+      <rect x="154.3" y="214.4" width="9.6" height="9.6" fill="#4f5a66"/>
+      <rect x="151.2" y="228.1" width="15.8" height="16.1" fill="#1a8c9c"/>
+      <rect x="60" y="44.0" width="4.8" height="33.6" fill="#6f7a86"/>
+      <g transform="rotate(2.54 79.2 92.0)"><rect x="67.2" y="32.0" width="24.0" height="60.0" rx="4" fill="#c77a1d"/><circle cx="79.2" cy="92.0" r="4" fill="#1b1f24"/></g>
+      <line style="stroke:var(--muted)" x1="272.6" y1="524.0" x2="612" y2="524.0" stroke-dasharray="2 3" opacity="0.7"/>
+      <line style="stroke:var(--muted)" x1="167.0" y1="236.0" x2="612" y2="236.0" stroke-dasharray="2 3" opacity="0.7"/>
+      <line style="stroke:var(--muted)" x1="91.2" y1="92.0" x2="644" y2="92.0" stroke-dasharray="2 3" opacity="0.7"/>
+      <line style="stroke:var(--muted)" x1="580" y1="524.0" x2="580" y2="236.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="576" y1="524.0" x2="584" y2="524.0"/>
+      <line style="stroke:var(--muted)" x1="576" y1="236.0" x2="584" y2="236.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(575 380.0) rotate(-90)" text-anchor="middle">датчик 1.20 м над песком</text>
+      <line style="stroke:var(--muted)" x1="612" y1="524.0" x2="612" y2="92.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="608" y1="524.0" x2="616" y2="524.0"/>
+      <line style="stroke:var(--muted)" x1="608" y1="92.0" x2="616" y2="92.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(607 308.0) rotate(-90)" text-anchor="middle">объектив 1.80 м над песком</text>
+      <line style="stroke:var(--muted)" x1="644" y1="560.0" x2="644" y2="92.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="640" y1="560.0" x2="648" y2="560.0"/>
+      <line style="stroke:var(--muted)" x1="640" y1="92.0" x2="648" y2="92.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(639 326.0) rotate(-90)" text-anchor="middle">объектив 1.95 м от пола</text>
+      <line style="stroke:var(--muted)" x1="676" y1="560.0" x2="676" y2="524.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="672" y1="560.0" x2="680" y2="560.0"/>
+      <line style="stroke:var(--muted)" x1="672" y1="524.0" x2="680" y2="524.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(671 542.0) rotate(-90)" text-anchor="middle">песок 0,15</text>
+      <line style="stroke:var(--muted)" x1="60.0" y1="574" x2="60.0" y2="630" stroke-dasharray="2 3" opacity="0.6"/>
+      <line style="stroke:var(--muted)" x1="79.2" y1="574" x2="79.2" y2="630" stroke-dasharray="2 3" opacity="0.6"/>
+      <line style="stroke:var(--muted)" x1="159.1" y1="574" x2="159.1" y2="630" stroke-dasharray="2 3" opacity="0.6"/>
+      <line style="stroke:var(--muted)" x1="271.7" y1="574" x2="271.7" y2="630" stroke-dasharray="2 3" opacity="0.6"/>
+      <line style="stroke:var(--muted)" x1="253.4" y1="574" x2="253.4" y2="630" stroke-dasharray="2 3" opacity="0.6"/>
+      <line style="stroke:var(--muted)" x1="60.0" y1="590.0" x2="271.7" y2="590.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="60.0" y1="586.0" x2="60.0" y2="594.0"/>
+      <line style="stroke:var(--muted)" x1="271.7" y1="586.0" x2="271.7" y2="594.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="279.7" y="594.0">картинка на песке от 0 до 882 мм от стены (вдоль стены 1.2 м)</text>
+      <line style="stroke:var(--muted)" x1="60.0" y1="608.0" x2="159.1" y2="608.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="60.0" y1="604.0" x2="60.0" y2="612.0"/>
+      <line style="stroke:var(--muted)" x1="159.1" y1="604.0" x2="159.1" y2="612.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="167.1" y="612.0">центр ящика и ось датчика 413 мм (ящик 1000×600: 338 мм)</text>
+      <line style="stroke:var(--muted)" x1="60.0" y1="626.0" x2="79.2" y2="626.0" stroke-width="1"/>
+      <line style="stroke:var(--muted)" x1="60.0" y1="622.0" x2="60.0" y2="630.0"/>
+      <line style="stroke:var(--muted)" x1="79.2" y1="622.0" x2="79.2" y2="630.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="87.2" y="630.0">объектив 80 мм от стены; ящик снаружи 20…806 мм, зазор под плинтус 20 мм</text>
+      <text style="fill:var(--text);font-size:11px" x="42" y="660">Вид сбоку, один масштаб по осям. Стена слева, ребёнок у переднего борта. Размеры от плоскости стены и от пола, мм.</text>
+      <line style="stroke:var(--muted)" x1="60" y1="10" x2="159.1" y2="10"/><line style="stroke:var(--muted)" x1="60" y1="6" x2="60" y2="14"/><line style="stroke:var(--muted)" x1="159.1" y1="6" x2="159.1" y2="14"/>
+      <text style="fill:var(--text);font-size:11px" x="167.1" y="14.0">вынос консоли до оси датчика 413 мм; консоль Г-образная: от стены на Y = +300, поперечина к центру</text>
+      <text style="fill:var(--text);font-size:11px" x="108.0" y="24.4">рейка 40×40, три анкера M8, верх 2,30 м; проектор на своей пластине по центру</text>
+      <text style="fill:var(--text);font-size:11px" x="113.2" y="60.8">проектор объективом вниз, дном к стене, на универсальном кронштейне;</text>
+      <text style="fill:var(--text);font-size:11px" x="113.2" y="72.8">наклон к стене 2.5°, отношение 1.5, картинка 1.2×0.90 м, страховочный трос</text>
+      <text style="fill:var(--text);font-size:11px" x="204.1" y="236.0">датчик Kinect v1 над центром ящика, 1.20 м над песком</text>
+      <text style="fill:var(--text);font-size:11px" x="204.1" y="248.0">видит 1.30×0.95 м (2.0 мм на пиксель), стена в кадре ниже 0.30 м</text>
+      <text style="fill:var(--text);font-size:11px" x="261.4" y="363.2">ребёнок 5 лет у переднего борта:</text>
+      <text style="fill:var(--text);font-size:11px" x="261.4" y="375.2">голова вне луча проектора, тени только от рук</text>
+      <text style="fill:var(--text);font-size:11px" x="68.0" y="459.2">ящик на полу: борт 250, фанера 18, песок 150 от пола</text>
+      <text style="fill:var(--text);font-size:11px" x="68.0" y="472.4">кабель-канал 40×25 рядом с рейкой, вниз к тумбе с ПК</text>
       </svg>
     </div>
-    <div class="card scheme">
-      <div class="cap">Потолок 3 м и выше</div>
-      <svg viewBox="0 0 520 470" role="img" aria-label="Потолок 3 метра и выше: одна штанга от потолка с растяжками, проектор на хомуте, датчик внизу штанги, песочница стоит на полу">
-        <rect class="slab" x="20" y="16" width="480" height="14"/><line class="floor" x1="20" y1="30" x2="500" y2="30"/>
-        <rect class="slab" x="20" y="420" width="480" height="14"/><line class="floor" x1="20" y1="420" x2="500" y2="420"/>
-        <polygon class="beam-fill" points="174,183 124,400 276,400"/>
-        <line class="beam" x1="174" y1="183" x2="124" y2="400"/><line class="beam" x1="174" y1="183" x2="276" y2="400"/>
-        <polygon class="fov-fill" points="222,237 132,400 312,400"/>
-        <line class="fov" x1="222" y1="237" x2="132" y2="400"/><line class="fov" x1="222" y1="237" x2="312" y2="400"/>
-        <path class="sandf" d="M135 416 V402 Q160 393 185 400 T235 398 T265 404 V416 Z"/>
-        <rect class="wood" x="131" y="383" width="4" height="37"/><rect class="wood" x="265" y="383" width="4" height="37"/><rect class="wood" x="131" y="416" width="138" height="4"/>
-        <circle class="kid-head" cx="298" cy="340" r="10.5"/>
-        <path class="kid" d="M296 354 L318 392 L290 394 L296 418 M288 418 H305 M296 356 L278 372 L256 393"/>
-        <line class="wire" x1="200" y1="164" x2="92" y2="30"/><line class="wire" x1="200" y1="164" x2="308" y2="30"/>
-        <rect class="steel" x="189" y="30" width="22" height="4"/><rect class="steel" x="197" y="34" width="6" height="194"/>
-        <circle class="steel" cx="200" cy="164" r="4"/>
-        <rect class="steel" x="176" y="166" width="24" height="3"/>
-        <rect class="proj" x="155" y="169" width="39" height="13" rx="3"/><circle class="dark" cx="174" cy="183" r="2.6"/>
-        <rect class="steel" x="200" y="226" width="24" height="3"/>
-        <rect class="sensor" x="205" y="228" width="34" height="8" rx="2"/><circle class="dark" cx="222" cy="237" r="1.6"/>
-        <line class="ext" x1="239" y1="237" x2="356" y2="237"/><line class="ext" x1="194" y1="183" x2="388" y2="183"/><line class="ext" x1="269" y1="400" x2="388" y2="400"/>
-        <line class="dim" x1="352" y1="237" x2="352" y2="400"/><line class="dim" x1="348" y1="237" x2="356" y2="237"/><line class="dim" x1="348" y1="400" x2="356" y2="400"/>
-        <text class="small" transform="translate(347 318) rotate(-90)" text-anchor="middle">датчик 1,3 м</text>
-        <line class="dim" x1="384" y1="183" x2="384" y2="400"/><line class="dim" x1="380" y1="183" x2="388" y2="183"/><line class="dim" x1="380" y1="400" x2="388" y2="400"/>
-        <text class="small" transform="translate(379 291) rotate(-90)" text-anchor="middle">проектор 1,7 м</text>
-        <line class="dim" x1="416" y1="30" x2="416" y2="420"/><line class="dim" x1="412" y1="30" x2="420" y2="30"/><line class="dim" x1="412" y1="420" x2="420" y2="420"/>
-        <text class="small" transform="translate(411 225) rotate(-90)" text-anchor="middle">потолок 3,0 м</text>
-        <rect class="mask" x="136" y="39" width="128" height="15" rx="3"/><text class="small" x="200" y="50" text-anchor="middle">фланец + 4 анкера</text>
-        <text class="small" x="118" y="112" text-anchor="end">штанга 1,5 м</text><text class="small" x="118" y="126" text-anchor="end">труба 40–50 мм</text>
-        <line class="ldr" x1="122" y1="118" x2="196" y2="118"/>
-        <text class="small" x="300" y="118">растяжки</text><text class="small" x="300" y="132">3 троса 2 мм</text>
-        <text class="small" x="118" y="176" text-anchor="end">хомут проектора</text><line class="ldr" x1="122" y1="172" x2="174" y2="167"/>
-        <text class="small" x="118" y="228" text-anchor="end">датчик внизу</text><text class="small" x="118" y="242" text-anchor="end">штанги</text>
-        <line class="ldr" x1="122" y1="232" x2="203" y2="229"/>
-        <text class="small" x="240" y="252">низ железа</text><text class="small" x="240" y="266">≈ 1,4 м от пола</text>
-        <text class="small" x="118" y="368" text-anchor="end">картинка</text><text class="small" x="118" y="382" text-anchor="end">≈ 1,1–1,3 м</text>
-        <text class="small" x="118" y="405" text-anchor="end">песок 0,15 м</text>
-        <text class="small" x="260" y="455" text-anchor="middle">песочница на полу · ребёнок ≈ 5 лет на корточках</text>
+    <div class="card scheme wall">
+      <div class="cap">Вид сверху</div>
+      <svg role="img" aria-label="Вид сверху: ящик у стены, датчик над центром ящика, рейка и консоль сдвинуты на 300 мм вдоль стены, проектор по центру, тумба с компьютером сбоку, дети спереди и с торцов" viewBox="0 0 820 600" font-family="Helvetica, Arial, sans-serif" font-size="11">
+      <defs><pattern id="hatchT" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#9aa5b1" stroke-width="1"/></pattern></defs>
+      <rect x="20" y="24" width="780" height="20" fill="url(#hatchT)" stroke="#6f7a86"/>
+      <line style="stroke:var(--line-strong)" x1="20" y1="44" x2="800" y2="44" stroke-width="2"/>
+      <text style="fill:var(--text);font-size:11px" x="796" y="38" text-anchor="end">стена</text>
+      <rect x="133.7" y="44.0" width="536.6" height="337.4" fill="none" stroke="#9aa5b1" stroke-dasharray="6 4"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="137.7" y="375.4">свободная зона 0,6 м с трёх сторон</text>
+      <rect x="258.0" y="44.0" width="288.0" height="211.7" fill="#f0a64a" opacity="0.10" stroke="#c77a1d" stroke-width="1.3"/>
+      <rect x="245.6" y="44.0" width="312.7" height="212.6" fill="#1a8c9c" opacity="0.06" stroke="#1a8c9c" stroke-width="1.3" stroke-dasharray="5 3"/>
+      <rect x="277.7" y="48.8" width="248.6" height="188.6" fill="#8a6a45"/>
+      <rect x="282.0" y="53.1" width="240.0" height="180.0" fill="#d9c79a"/>
+      <text style="fill:var(--muted);font-size:11px" x="402.0" y="206.4" text-anchor="middle">песок 1000 × 750 внутри, борт 18 мм</text>
+      <rect x="358.0" y="57.4" width="88.0" height="64.6" fill="#c77a1d" opacity="0.28"/>
+      <text style="fill:var(--proj);font-size:10px" x="402.0" y="183.1" text-anchor="middle">оранжевое у стены — сечение луча на высоте консоли 1.40 м</text>
+      <rect x="469.2" y="44.0" width="9.6" height="108.7" fill="#6f7a86"/>
+      <rect x="387.6" y="138.3" width="91.2" height="9.6" fill="#4f5a66"/>
+      <rect x="372.1" y="135.2" width="59.8" height="15.8" fill="#1a8c9c"/>
+      <rect x="366.0" y="51.2" width="72.0" height="24.0" fill="#c77a1d"/>
+      <circle cx="402.0" cy="63.2" r="3.5" fill="#1b1f24"/>
+      <rect x="486.0" y="44.0" width="168.0" height="6.0" fill="#e8e4dc" stroke="#6f7a86"/>
+      <rect x="606.0" y="48.8" width="96.0" height="96.0" fill="#a79c8c" stroke="#6f7a86"/>
+      <text style="font-size:10.5px" x="654.0" y="96.0" text-anchor="middle" fill="#fff">тумба</text>
+      <text style="font-size:10.5px" x="654.0" y="110.4" text-anchor="middle" fill="#fff">ПК, ИБП, фильтр</text>
+      <g transform="translate(339.6 275.8) rotate(0)"><ellipse rx="45.6" ry="21.6" fill="#9aa5b1" opacity="0.6"/><circle cy="-7.2" r="18.0" fill="#9aa5b1"/></g>
+      <g transform="translate(464.4 275.8) rotate(0)"><ellipse rx="45.6" ry="21.6" fill="#9aa5b1" opacity="0.6"/><circle cy="-7.2" r="18.0" fill="#9aa5b1"/></g>
+      <g transform="translate(239.3 143.1) rotate(90)"><ellipse rx="45.6" ry="21.6" fill="#9aa5b1" opacity="0.6"/><circle cy="-7.2" r="18.0" fill="#9aa5b1"/></g>
+      <g transform="translate(564.7 143.1) rotate(90)"><ellipse rx="45.6" ry="21.6" fill="#9aa5b1" opacity="0.6"/><circle cy="-7.2" r="18.0" fill="#9aa5b1"/></g>
+      <line style="stroke:var(--muted)" x1="258.0" y1="356.0" x2="546.0" y2="356.0"/>
+      <line style="stroke:var(--muted)" x1="258.0" y1="352.0" x2="258.0" y2="360.0"/>
+      <line style="stroke:var(--muted)" x1="546.0" y1="352.0" x2="546.0" y2="360.0"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="402.0" y="369.0" text-anchor="middle">картинка проектора 1200 мм</text>
+      <line style="stroke:var(--muted)" x1="277.7" y1="377.6" x2="526.3" y2="377.6"/>
+      <line style="stroke:var(--muted)" x1="277.7" y1="373.6" x2="277.7" y2="381.6"/>
+      <line style="stroke:var(--muted)" x1="526.3" y1="373.6" x2="526.3" y2="381.6"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="402.0" y="390.6" text-anchor="middle">ящик снаружи 1036 мм</text>
+      <line style="stroke:var(--muted)" x1="245.6" y1="399.2" x2="558.4" y2="399.2"/>
+      <line style="stroke:var(--muted)" x1="245.6" y1="395.2" x2="245.6" y2="403.2"/>
+      <line style="stroke:var(--muted)" x1="558.4" y1="395.2" x2="558.4" y2="403.2"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="402.0" y="412.2" text-anchor="middle">поле датчика 1303 мм</text>
+      <line style="stroke:var(--muted)" x1="402.0" y1="420.8" x2="474.0" y2="420.8"/>
+      <line style="stroke:var(--muted)" x1="402.0" y1="416.8" x2="402.0" y2="424.8"/>
+      <line style="stroke:var(--muted)" x1="474.0" y1="416.8" x2="474.0" y2="424.8"/>
+      <text style="fill:var(--muted);font-size:10.5px" x="438.0" y="433.8" text-anchor="middle">консоль +300 мм от центра, поперечина к центру</text>
+      <line style="stroke:var(--muted)" x1="229.2" y1="44.0" x2="229.2" y2="143.1"/>
+      <line style="stroke:var(--muted)" x1="225.2" y1="44.0" x2="233.2" y2="44.0"/>
+      <line style="stroke:var(--muted)" x1="225.2" y1="143.1" x2="233.2" y2="143.1"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(224.2 93.6) rotate(-90)" text-anchor="middle">ось датчика 413</text>
+      <line style="stroke:var(--muted)" x1="195.6" y1="44.0" x2="195.6" y2="237.4"/>
+      <line style="stroke:var(--muted)" x1="191.6" y1="44.0" x2="199.6" y2="44.0"/>
+      <line style="stroke:var(--muted)" x1="191.6" y1="237.4" x2="199.6" y2="237.4"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(190.6 140.7) rotate(-90)" text-anchor="middle">ящик до 806</text>
+      <line style="stroke:var(--muted)" x1="162.0" y1="44.0" x2="162.0" y2="255.7"/>
+      <line style="stroke:var(--muted)" x1="158.0" y1="44.0" x2="166.0" y2="44.0"/>
+      <line style="stroke:var(--muted)" x1="158.0" y1="255.7" x2="166.0" y2="255.7"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(157.0 149.9) rotate(-90)" text-anchor="middle">картинка до 882</text>
+      <line style="stroke:var(--muted)" x1="128.4" y1="44.0" x2="128.4" y2="63.2"/>
+      <line style="stroke:var(--muted)" x1="124.4" y1="44.0" x2="132.4" y2="44.0"/>
+      <line style="stroke:var(--muted)" x1="124.4" y1="63.2" x2="132.4" y2="63.2"/>
+      <text style="fill:var(--muted);font-size:10.5px" transform="translate(123.4 53.6) rotate(-90)" text-anchor="middle">объектив 80</text>
+      <text style="fill:var(--text);font-size:11px" x="361.2" y="69.6" text-anchor="end">проектор, Y = 0</text>
+      <text style="fill:var(--text);font-size:10.5px" x="483.6" y="76.8" text-anchor="start">рейка, Y = +300</text>
+      <text style="fill:var(--text);font-size:11px" x="363.6" y="147.1" text-anchor="end">датчик Kinect v1, X = 413</text>
+      <text style="fill:var(--muted);font-size:9.5px" x="486.0" y="54.2" text-anchor="start">кабель-канал → тумба</text>
+      <text style="fill:var(--text);font-size:11px" x="402.0" y="318.2" text-anchor="middle">двое детей спереди</text>
+      <text style="fill:var(--text);font-size:10.5px" x="564.7" y="204.7" text-anchor="middle">по одному с торцов</text>
+      <text style="fill:var(--text);font-size:10.5px" x="90.0" y="447.2" text-anchor="start">Проектор на настенной пластине по центру ящика (Y = 0), объектив на 80 мм от стены и 1.95 м от пола.</text>
+      <text style="fill:var(--text);font-size:10.5px" x="90.0" y="461.2" text-anchor="start">Консоль Г-образная: от стены на Y = +300, поперечина к центру на X = 413. На высоте консоли луч занимает</text>
+      <text style="fill:var(--text);font-size:10.5px" x="90.0" y="475.2" text-anchor="start">±183 мм по Y и до 325 мм от стены — консоль, поперечина и датчик вне луча, тени нет.</text>
+      <text style="fill:var(--text);font-size:10.5px" x="90.0" y="489.2" text-anchor="start">Датчик Kinect v1 над центром ящика на 1.35 м от пола; поле 1.30 × 0.95 м, 2.0 мм на пиксель.</text>
+      <text style="fill:var(--text);font-size:10.5px" x="90.0" y="503.2" text-anchor="start">Кабель-канал по стене рядом с рейкой, затем вдоль плинтуса к тумбе; ни одного кабеля ниже 1,3 м в зоне детей.</text>
+      <text style="fill:var(--text);font-size:11px" x="410.0" y="588.0" text-anchor="middle">Вид сверху, масштаб один по осям. Стена сверху. X — от стены, Y — вдоль стены от центра ящика, мм.</text>
       </svg>
     </div>
   </div>
   <div class="grid-3" style="margin-top:1rem">
-    <div class="tile sensor"><h3>Общее для любого потолка</h3>
+    <div class="tile sensor"><h3>Общее</h3>
       <ul>
-        <li>Датчик — всегда на 1,0–1,3 м над песком, то есть 1,15–1,45 м от пола. Прямо на потолок его не вешают: с 2 м он видит грубо, с 3 м шум датчика больше, чем горка из песка. Опуск нужен при любом потолке.</li>
-        <li>Проектор — на высоте «проекционное отношение × ширина картинки 1,1 м». Обычный объектив (отношение ≈ 1,5) даёт ≈ 1,7 м над песком, то есть ≈ 1,85 м от пола — как раз под потолок 2 м.</li>
-        <li>Всё железо — над центром ящика, в габарите 1,0 × 0,75 м: туда никто не ходит, взрослый у борта не задевает головой.</li>
-        <li>Датчик и проектор разнесены на 25–35 см, датчик ниже и вне луча проектора — иначе тень на песке.</li>
+        <li>Датчик — строго над центром ящика (413 мм от стены), 1,20 м над песком, то есть 1,35 м от пола. Если понадобится запасной Kinect v2, он встаёт на то же место на 10 см выше.</li>
+        <li>Проектор — на стене по центру ящика, объективом вниз; объектив на 1,95 м от пола и 80 мм от стены, наклон к стене 2,5°. Картинка 1,2 × 0,9 м накрывает ящик с запасом.</li>
+        <li>Консоль Г-образная: от стены на 300 мм в сторону от центра, потом поперечина к центру. На высоте консоли (1,40 м) луч проектора занимает ±18 см от оси и доходит до 325 мм от стены — консоль и датчик остаются вне луча с зазором 6 см. Прямая консоль по центру дала бы полосу тени 16 см.</li>
+        <li>Низ железа — 1,40 м от пола: взрослый у борта не задевает головой, ребёнок не дотягивается.</li>
       </ul>
     </div>
     <div class="tile"><h3>Крепёж и кабели</h3>
       <ul>
-        <li>Только в бетон или несущую балку: анкеры 8–10 мм, фланец с четырьмя анкерами под опуск. Гипсокартон и натяжной потолок нагрузку не держат.</li>
-        <li>Проектор — универсальный потолочный кронштейн на 10–15 кг плюс страховочный тросик.</li>
-        <li>Датчик — кронштейн под Kinect или самодельный хомут. После калибровки не трогать.</li>
-        <li>Кабели в кабель-канале по потолку и по штанге. USB длиннее 3 м — активный удлинитель, HDMI до 10 м без проблем.</li>
+        <li>Стальная рейка 40×40 на стене, три анкера M8 в бетон или кирпич; низ рейки 1,30 м, верх 2,30 м.</li>
+        <li>Проектор — универсальный кронштейн на 10–15 кг на своей пластине (четыре анкера) плюс страховочный тросик. В паспорте проектора должна быть разрешена установка объективом вниз.</li>
+        <li>Датчик — кронштейн под Kinect на поперечине консоли. После калибровки не трогать.</li>
+        <li>Кабели: канал 40×25 по стене рядом с рейкой, дальше 25×16 вдоль плинтуса к тумбе с компьютером сбоку от ящика. Ни одного открытого кабеля ниже 1,3 м в зоне детей.</li>
       </ul>
     </div>
     <div class="tile proj"><h3>Что выбрать</h3>
       <ul>
-        <li><b>Потолок 2–2,5 м:</b> проектор прямо на потолок, датчик на опуске 0,5–1 м. Минимум железа, ничего не качается. Короткофокусный проектор не нужен.</li>
-        <li><b>Потолок 3 м и выше:</b> одна штанга с растяжками длиной «высота потолка минус 1,5 м» (потолок 3 м — штанга 1,5 м, 3,5 м — 2 м), проектор на хомуте, датчик внизу. Либо напольная стойка — ничего не сверлим, установку можно переставить.</li>
-        <li>Напольная стойка из 3D-модели — запасной вариант при любом потолке и для арендованного помещения.</li>
+        <li><b>Стена из бетона или кирпича:</b> рейка на анкерах — основной вариант. Минимум железа, ничего не качается.</li>
+        <li><b>Гипсокартон:</b> крепимся только в стойки каркаса или сквозными шпильками; если это невозможно — напольная стойка 2,0 м из 3D-модели, ничего не сверлим.</li>
+        <li><b>Натяжной потолок:</b> не трогаем совсем — к нему ничего не крепим и ничего рядом не греем, горячий воздух проектора выходит в сторону от плёнки. Потолок не ниже 2,35 м; если ниже — проектор опускаем до 1,85 м и берём объектив с отношением 1,4.</li>
+        <li>Подвес к потолку (схемы «потолок 2 м / 3 м», штанги-опуски) — не наш случай, для этого объекта не применяется.</li>
       </ul>
     </div>
   </div>
@@ -584,15 +669,16 @@
 
 <section id="software"><div class="wrap">
   <div class="eyebrow">Программная часть</div>
-  <h2>Два готовых открытых решения</h2>
+  <h2>Поэтапно: сначала готовая программа, потом своя</h2>
+  <p class="lead">Этап 0 — первая неделя, без единой строчки кода: бесплатная Magic Sand на имеющемся ПК проверяет датчик, проектор, калибровку и задержку. Этап 1 — собственная программа под задачи клиники: сеансы с записью, спокойные режимы, профили детей. Этапы 2–3 — отчёты для специалистов, управление проектором по сети, готовый продукт.</p>
   <div class="grid-2">
-    <div class="tile"><div class="k">Вариант А · Magic Sand</div>
-      <p>Бесплатная программа с открытым кодом. <b>Windows и macOS</b>, поддержка Kinect v1 и v2, встроенный мастер калибровки, встроенные мини-игры. Проще всего для запуска на обычном ПК.</p>
-      <ul><li>цветовая шкала и горизонтали настраиваются в интерфейсе</li><li>упрощённая вода</li><li>подходит для большинства установок</li></ul>
+    <div class="tile"><div class="k">Этап 0 · Magic Sand — проверка без кода</div>
+      <p>Бесплатная программа с открытым кодом, <b>Windows</b>, поддерживает Kinect v1 и v2, встроенный мастер калибровки. Ставим на имеющийся ПК в первую неделю и убеждаемся, что датчик видит песок, проектор попадает в ящик, а отклик достаточно быстрый.</p>
+      <ul><li>цветовая шкала и горизонтали настраиваются в интерфейсе</li><li>проверка задержки: снимаем телефоном 240 кадров/с и считаем кадры от движения руки до перекраски</li><li>решение «v1 или v2» принимаем по итогам этой недели</li></ul>
     </div>
-    <div class="tile"><div class="k">Вариант Б · SARndbox (UC Davis)</div>
-      <p>Оригинальная разработка Калифорнийского университета (UC Davis). <b>Linux</b>. Лучшая физика воды и дождя, максимальная точность.</p>
-      <ul><li>вода стекает по рельефу, собирается в озёра, испаряется</li><li>дождь «из руки» над песком</li><li>выше требования к видеокарте и к навыкам настройки</li></ul>
+    <div class="tile"><div class="k">Этап 1 · Собственная программа</div>
+      <p>Python, установка на <b>Ubuntu 24.04</b> в режиме киоска: включил — работает. Внутри пять частей: служба датчика (Kinect v1 через libfreenect или Kinect SDK 1.8, v2 через libfreenect2 / SDK 2.0), отрисовка на видеокарте, рекордер, консоль специалиста и наблюдатель.</p>
+      <ul><li>сеансы с записью: что и как долго ребёнок делал с песком</li><li>спокойные режимы без резких цветов и профили детей</li><li>короткое сглаживание и отсечение рук — отклик ≤ 150 мс</li></ul>
     </div>
   </div>
   <h3 style="margin-top:1.4rem">Калибровка — четыре этапа, делается один раз</h3>
@@ -609,11 +695,11 @@
   <div class="eyebrow">Сборка</div>
   <h2>Порядок работ</h2>
   <ol class="steps">
-    <li><div><b>Короб</b>Раскрой фанеры, сборка на уголках и клее, герметик по стыкам, шлифовка кромок. Ставится прямо на пол, снизу войлок или резина.<span class="chk">внутри 1000×750, борт 250–300, стоит без люфта, кромки без заусенцев</span></div></li>
-    <li><div><b>Стойка или подвес</b>Напольная стойка за задней стенкой с двумя консолями над центром ящика — или опуск с потолка (раздел «Крепление»). Площадки под датчик и проектор с регулировкой.<span class="chk">толчок по стойке или штанге — картинка не «плывёт»</span></div></li>
-    <li><div><b>Датчик</b>Крепится над центром, ось вниз, высота 1,0–1,3 м над песком. Кабель — по стойке, с запасом.<span class="chk">весь ящик виден в кадре глубины с полями</span></div></li>
-    <li><div><b>Проектор</b>Выше датчика и в стороне от него, наклон в центр ящика, ручной фокус по песку, изображение чуть шире ящика.<span class="chk">резкость по всей площади, датчик не отбрасывает тень на песок</span></div></li>
-    <li><div><b>Компьютер</b>Драйверы датчика, программа, проектор как второй экран в родном разрешении, автозапуск.<span class="chk">программа видит датчик и выводит на проектор</span></div></li>
+    <li><div><b>Короб</b>Раскрой фанеры, сборка на уголках и клее, герметик по стыкам, шлифовка кромок. Ставится прямо на пол, снизу войлок или резина.<span class="chk">внутри 1000×750, борт 250, вплотную к стене с зазором 20 мм под плинтус, стоит без люфта, кромки без заусенцев</span></div></li>
+    <li><div><b>Крепление к стене</b>Рейка 40×40 на трёх анкерах M8 (низ 1,30 м, верх 2,30 м), сдвинута на 300 мм от центра ящика вдоль стены; Г-образная консоль выносит датчик над центр ящика. Пластина проектора на своих четырёх анкерах по центру ящика, кронштейн с регулировкой наклона, страховочный тросик. Запасной вариант — напольная стойка 2,0 м (раздел «Крепление»).<span class="chk">толчок по консоли — картинка не «плывёт»; консоль и датчик вне луча проектора</span></div></li>
+    <li><div><b>Датчик</b>Kinect v1 на поперечине консоли над центром ящика, ось вниз, 1,20 м над песком (1,35 м от пола). Кабель — в канале по стене, с запасом.<span class="chk">весь ящик виден в кадре глубины с полями</span></div></li>
+    <li><div><b>Проектор</b>На стене выше датчика, объективом вниз (по паспорту это разрешено), наклон к стене 2,5°, ручной фокус по песку, изображение чуть шире ящика. В меню: игровой режим, автокоррекция трапеции и интерполяция выключены.<span class="chk">резкость по всей площади, датчик и консоль не отбрасывают тень на песок</span></div></li>
+    <li><div><b>Компьютер</b>Драйверы датчика, программа (этап 0 — Magic Sand), проектор как второй экран в родном разрешении, датчик в порт USB напрямую, автозапуск.<span class="chk">программа видит датчик и выводит на проектор</span></div></li>
     <li><div><b>Песок</b>Засыпка слоем 100–150 мм, разравнивание длинной рейкой.<span class="chk">ровная плоскость до калибровки</span></div></li>
     <li><div><b>Калибровка</b>Четыре этапа из раздела выше. Сохраняется в файл настроек.<span class="chk">контур насыпи и цвет совпадают с реальным песком</span></div></li>
     <li><div><b>Доводка и сдача</b>Настройка шкалы под реальную глубину, шаг горизонталей, тест воды, инструкция для персонала: включение одним выключателем.<span class="chk">включение «с нуля» до картинки — без участия настройщика</span></div></li>
@@ -623,18 +709,20 @@
 <section id="risks"><div class="wrap">
   <div class="eyebrow">Риски и как их закрываем</div>
   <h2>Что обычно ломает такие установки</h2>
-  <p class="lead">Три главных риска — яркий свет в зале, сдвиг крепежа и снятый с производства датчик. У каждого есть штатное решение.</p>
+  <p class="lead">Главные риски — яркий свет в зале, задержка отклика, сдвиг крепежа, натяжной потолок и снятый с производства датчик. У каждого есть штатное решение.</p>
   <div class="table-wrap"><table>
     <thead><tr><th>Риск</th><th>Как проявляется</th><th>Решение</th></tr></thead>
     <tbody>
-      <tr><td>Яркий свет в зале</td><td>Проекция блёклая, цвета не читаются</td><td>Затемнение зоны, проектор от 3000 лм, светлый песок</td></tr>
+      <tr><td>Яркий свет в зале</td><td>Проекция блёклая, цвета не читаются</td><td>Затемнение зоны, проектор 3300–4000 лм, светлый песок</td></tr>
+      <tr><td>Задержка отклика</td><td>Картинка отстаёт от руки, ощущение «вязкости»</td><td>Проектор в игровом режиме без цифровой трапеции, сглаживание 1–2 кадра, отсечение рук без задержки, датчик в порт USB напрямую, ПК с дискретной видеокартой; цель ≤ 150 мс, проверяем съёмкой на телефон 240 кадров/с</td></tr>
       <tr><td>Шум датчика</td><td>Картинка «дрожит», горизонтали мигают</td><td>Усреднение по кадрам в софте, стабильное питание адаптера</td></tr>
       <tr><td>Руки над песком</td><td>Ладонь красится как гора</td><td>Фильтр по времени: считается только неподвижная поверхность</td></tr>
-      <tr><td>Смещение крепежа</td><td>Карта сдвинута относительно песка</td><td>Жёсткая стойка, контрольная точка, перекалибровка за 10 минут</td></tr>
-      <tr><td>Дети и песок на полу</td><td>Ребёнок встаёт в ящик и тянется к железу; песок вокруг ящика</td><td>Правило «в ящик не залезаем»; датчик и проектор над центром, низ ≈ 1,4 м; коврик вокруг, кабели в канале</td></tr>
+      <tr><td>Смещение крепежа</td><td>Карта сдвинута относительно песка</td><td>Стальная рейка на анкерах, контрольная точка, перекалибровка за 10 минут</td></tr>
+      <tr><td>Натяжной потолок</td><td>Плёнку нельзя нагружать и греть</td><td>К потолку ничего не крепим — всё на стене; горячий воздух проектора выходит в сторону от плёнки; потолок не ниже 2,35 м</td></tr>
+      <tr><td>Дети и песок на полу</td><td>Ребёнок встаёт в ящик и тянется к железу; песок вокруг ящика</td><td>Правило «в ящик не залезаем»; датчик над центром, низ железа 1,40 м, кабели не ниже 1,3 м; коврик вокруг</td></tr>
       <tr><td>Слабая видеокарта</td><td>Тормозит вода, падает частота кадров</td><td>Дискретная карта; при необходимости отключить воду</td></tr>
       <tr><td>Пыль на объективах</td><td>Мутная проекция, ошибки глубины</td><td>Датчик и проектор выше зоны пыли, регламент протирки</td></tr>
-      <tr><td>Датчик Kinect больше не выпускается</td><td>Новый не купить в магазине</td><td>Берём проверенный б/у (предложений много) или современный аналог — Orbbec Femto, Azure Kinect; программа их поддерживает</td></tr>
+      <tr><td>Датчик Kinect больше не выпускается</td><td>Новый не купить в магазине</td><td>Берём проверенный б/у Kinect v1 (предложений много); запасной — Kinect v2; современные аналоги (Orbbec, RealSense) — в будущем через общий интерфейс программы</td></tr>
     </tbody>
   </table></div>
 </div></section>
@@ -653,10 +741,10 @@
       <ul><li>Учебные классы: география, топография, водосборы</li><li>Музеи и научные центры: интерактивный экспонат</li><li>Детские центры, сенсорные и реабилитационные комнаты</li><li>Шоурумы и выставки: «магнит» для посетителей</li></ul>
     </div>
     <div class="tile sensor"><h3>Безопасность и гигиена</h3>
-      <ul><li>Возраст: с 3 лет вместе со взрослым, с 5–6 лет — самостоятельно</li><li>Песок: сухой просеянный кварцевый или игровой, без пыли; просеивать раз в неделю, менять раз в 6–12 месяцев</li><li>Свет: датчик работает слабым невидимым инфракрасным светом; проектор светит вниз, в глаза с места игры не попадает</li><li>Электрика: всё оборудование выше 1,4 м, кабели в канале, один выключатель у персонала — ребёнок трогает только песок</li><li>Развивает моторику, пространственное мышление, понимание «вода течёт вниз»; подходит для сенсорных занятий</li></ul>
+      <ul><li>Возраст: с 3 лет вместе со взрослым, с 5–6 лет — самостоятельно</li><li>Песок: сухой просеянный кварцевый или игровой, без пыли; просеивать раз в неделю, менять раз в 6–12 месяцев</li><li>Свет: датчик работает слабым невидимым инфракрасным светом; проектор светит вниз, в глаза с места игры не попадает</li><li>Электрика: всё железо на стене выше 1,3 м, кабели в закрытом канале, один выключатель у персонала — ребёнок трогает только песок</li><li>Развивает моторику, пространственное мышление, понимание «вода течёт вниз»; подходит для сенсорных занятий</li></ul>
     </div>
     <div class="tile"><h3>Что клиент получает в итоге</h3>
-      <ul><li>Готовую установку: короб, стойка, датчик, проектор, компьютер</li><li>Настроенный софт с калибровкой и автозапуском</li><li>Инструкцию для персонала: включение, уход за песком, перекалибровка</li><li>Возможность расширения: игры, режимы, свои палитры</li></ul>
+      <ul><li>Готовую установку: короб, крепление к стене, датчик, проектор, компьютер</li><li>Настроенный софт с калибровкой и автозапуском</li><li>Инструкцию для персонала: включение, уход за песком, перекалибровка</li><li>Возможность расширения: игры, режимы, свои палитры</li></ul>
     </div>
   </div>
 </div></section>
@@ -810,8 +898,8 @@
     window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function () { scene.background = new THREE.Color(bgColor()); });
 
     var camera = new THREE.PerspectiveCamera(42, 16 / 10, 0.05, 50);
-    var target = new THREE.Vector3(0, 0.95, 0);
-    var orbit = { theta: 0.85, phi: 1.12, r: 3.6, spin: !reduceMotion };
+    var target = new THREE.Vector3(0, 1.0, 0);
+    var orbit = { theta: 0.55, phi: 1.15, r: 3.6, spin: !reduceMotion };
     function updateCam() {
       camera.position.set(target.x + orbit.r * Math.sin(orbit.phi) * Math.sin(orbit.theta), target.y + orbit.r * Math.cos(orbit.phi), target.z + orbit.r * Math.sin(orbit.phi) * Math.cos(orbit.theta));
       camera.lookAt(target);
@@ -880,60 +968,44 @@
       ball(V(-0.37, 0.29, s * 0.6), 0.03);
     });
 
-    // датчик и проектор: высоты одни для всех способов крепления
+    // датчик над центром ящика, проектор на стене по центру ящика — одинаково для обоих способов крепления
     var steel = new THREE.MeshLambertMaterial({ color: 0x6f7a86 });
-    var SENSOR_Y = 1.45, PROJ_Y = 1.88;
-    var sensorPos = new THREE.Vector3(0.17, SENSOR_Y, 0);
-    var projPos = new THREE.Vector3(-0.2, PROJ_Y, 0);
+    var SENSOR_Y = 1.35, LENS_Y = 1.95, WALL_Z = -0.43;
+    var sensorPos = new THREE.Vector3(0, SENSOR_Y, 0);
+    var lensPos = new THREE.Vector3(0, LENS_Y, -0.35);
     box(0.26, 0.06, 0.07, sensorPos.x, sensorPos.y, sensorPos.z, new THREE.MeshLambertMaterial({ color: 0x37b7c8 }));
     var eye = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 16), new THREE.MeshLambertMaterial({ color: 0x0b2b31 })); eye.position.set(sensorPos.x, sensorPos.y - 0.035, sensorPos.z); scene.add(eye);
-    box(0.3, 0.1, 0.24, projPos.x, projPos.y, projPos.z, new THREE.MeshLambertMaterial({ color: 0xf0a64a }));
-    var lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 24), new THREE.MeshLambertMaterial({ color: 0x2b2b2b })); lens.position.set(projPos.x, projPos.y - 0.06, projPos.z + 0.05); scene.add(lens);
+    box(0.04, 0.02, 0.04, 0, 1.39, 0, steel); // хомут датчика под поперечиной
+    // проектор объективом вниз, дном к стене; группа наклонена к стене на 2,5°, ось вращения — объектив
+    var gProj = new THREE.Group(); gProj.position.copy(lensPos); gProj.rotation.x = 0.0436; scene.add(gProj);
+    box(0.30, 0.25, 0.10, 0, 0.125, 0, new THREE.MeshLambertMaterial({ color: 0xf0a64a }), gProj);
+    var lens = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 24), new THREE.MeshLambertMaterial({ color: 0x2b2b2b })); lens.position.set(0, 0, 0); gProj.add(lens);
 
-    // вариант 1: напольная стойка с двумя консолями
+    // вариант 1 (основной): стена, рейка 40×40, Г-образная консоль, пластина проектора
+    var gWall = new THREE.Group(); scene.add(gWall);
+    (function () {
+      var g = new THREE.PlaneGeometry(3.6, 2.6);
+      var wall = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0xa8a092, transparent: true, opacity: 0.35, side: THREE.DoubleSide, depthWrite: false }));
+      wall.position.set(0, 1.3, WALL_Z); gWall.add(wall);
+      var edge = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0xa8a092, transparent: true, opacity: 0.6 }));
+      edge.position.set(0, 1.3, WALL_Z); gWall.add(edge);
+    })();
+    box(0.04, 1.0, 0.04, 0.30, 1.80, -0.41, steel, gWall);   // рейка: низ 1,30 м, верх 2,30 м, Y = +300 от центра
+    box(0.04, 0.04, 0.47, 0.30, 1.42, -0.195, steel, gWall); // консоль от стены, вынос до 450 мм
+    box(0.36, 0.04, 0.04, 0.14, 1.42, 0, steel, gWall);      // поперечина к центру ящика
+    box(0.14, 0.14, 0.02, 0, 2.08, -0.42, steel, gWall);     // пластина проектора, четыре анкера
+    box(0.05, 0.05, 0.05, 0, 2.08, -0.385, steel, gWall);    // кронштейн между пластиной и проектором
+
+    // вариант 2 (запасной): напольная стойка 2,0 м без сверления, те же высоты
     var gStand = new THREE.Group(); scene.add(gStand);
     var POST = 2.0;
-    box(0.06, POST, 0.06, 0, POST / 2, -0.62, steel, gStand);
-    box(0.46, 0.06, 0.06, -0.015, PROJ_Y + 0.09, -0.62, steel, gStand);
-    box(0.06, 0.06, 0.62, projPos.x, PROJ_Y + 0.09, -0.31, steel, gStand);
-    box(0.36, 0.03, 0.2, projPos.x, PROJ_Y + 0.065, 0, steel, gStand);
-    box(0.46, 0.06, 0.06, 0.085, SENSOR_Y + 0.06, -0.62, steel, gStand);
-    box(0.06, 0.06, 0.62, sensorPos.x, SENSOR_Y + 0.06, -0.31, steel, gStand);
-    box(0.06, 0.06, 0.5, 0, 0.03, -0.62, steel, gStand); box(0.7, 0.06, 0.06, 0, 0.03, -0.62, steel, gStand);
-
-    // потолок: полупрозрачная плита + крепёж
-    function ceilingSlab(y, group) {
-      var g = new THREE.PlaneGeometry(2.4, 1.9);
-      var slab = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ color: 0x8b95a1, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false }));
-      slab.rotation.x = Math.PI / 2; slab.position.y = y; group.add(slab);
-      var edge = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: 0x8b95a1, transparent: true, opacity: 0.6 }));
-      edge.rotation.x = Math.PI / 2; edge.position.y = y; group.add(edge);
-    }
-    var flangeGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.012, 20);
-    function flange(x, y, z, group) { var m = new THREE.Mesh(flangeGeo, steel); m.position.set(x, y - 0.006, z); group.add(m); }
-    function pipe(x, y1, y2, z, r, group) { var m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, y1 - y2, 14), steel); m.position.set(x, (y1 + y2) / 2, z); m.castShadow = true; group.add(m); }
-
-    // вариант 2: потолок 2 м — проектор на кронштейне, датчик на коротком опуске
-    var gC2 = new THREE.Group(); scene.add(gC2); var C2 = 2.0;
-    ceilingSlab(C2, gC2);
-    flange(projPos.x, C2, 0, gC2); pipe(projPos.x, C2, PROJ_Y + 0.06, 0, 0.015, gC2);
-    box(0.34, 0.02, 0.2, projPos.x, PROJ_Y + 0.06, 0, steel, gC2);
-    flange(sensorPos.x, C2, 0, gC2); pipe(sensorPos.x, C2, SENSOR_Y + 0.03, 0, 0.016, gC2);
-
-    // вариант 3: потолок 3 м — штанга с растяжками, проектор на хомуте, датчик внизу
-    var gC3 = new THREE.Group(); scene.add(gC3); var C3 = 3.0;
-    ceilingSlab(C3, gC3);
-    flange(0, C3, 0, gC3); pipe(0, C3, SENSOR_Y + 0.03, 0, 0.024, gC3);
-    box(0.2, 0.03, 0.04, 0.085, SENSOR_Y + 0.045, 0, steel, gC3);
-    box(0.24, 0.03, 0.04, -0.1, PROJ_Y + 0.07, 0, steel, gC3);
-    box(0.34, 0.02, 0.2, projPos.x, PROJ_Y + 0.06, 0, steel, gC3);
-    (function () {
-      var pts = [], a = new THREE.Vector3(0, 1.97, 0);
-      [[0.9, -0.7], [-0.9, -0.7], [0, 0.85]].forEach(function (p) { pts.push(a.x, a.y, a.z, p[0], C3, p[1]); });
-      var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
-      gC3.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.7 })));
-      var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 16), steel); collar.position.set(0, 1.97, 0); gC3.add(collar);
-    })();
+    box(0.06, POST, 0.06, 0.30, POST / 2, -0.62, steel, gStand);
+    box(0.06, 0.06, 0.42, 0.30, 0.03, -0.66, steel, gStand); box(0.7, 0.06, 0.06, 0.30, 0.03, -0.62, steel, gStand);
+    box(0.04, 0.04, 0.66, 0.30, 1.42, -0.29, steel, gStand); // консоль датчика, 1,42 м
+    box(0.36, 0.04, 0.04, 0.14, 1.42, 0, steel, gStand);
+    box(0.04, 0.04, 0.27, 0.30, 1.93, -0.485, steel, gStand); // консоль проектора, 1,93 м
+    box(0.16, 0.04, 0.04, 0.23, 1.93, -0.35, steel, gStand);
+    box(0.02, 0.2, 0.08, 0.16, 2.05, -0.35, steel, gStand);  // боковая пластина проектора
 
     function cone(from, corners, color) {
       var pts = [];
@@ -942,30 +1014,31 @@
       var g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
       var l = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.75 })); scene.add(l); return l;
     }
-    var sensorCone = cone(new THREE.Vector3(sensorPos.x, sensorPos.y - 0.04, sensorPos.z), [[-0.55, sandTopY, -0.42], [0.55, sandTopY, -0.42], [0.55, sandTopY, 0.42], [-0.55, sandTopY, 0.42]], 0x37b7c8);
-    var projCone = cone(new THREE.Vector3(projPos.x, projPos.y - 0.07, projPos.z + 0.05), [[-0.53, sandTopY, -0.4], [0.53, sandTopY, -0.4], [0.53, sandTopY, 0.4], [-0.53, sandTopY, 0.4]], 0xf0a64a);
+    var sensorCone = cone(new THREE.Vector3(0, 1.31, 0), [[-0.55, sandTopY, -0.42], [0.55, sandTopY, -0.42], [0.55, sandTopY, 0.42], [-0.55, sandTopY, 0.42]], 0x37b7c8);
+    // луч проектора: картинка 1,2 × 0,9 м, от стены до 882 мм
+    var projCone = cone(lensPos, [[-0.6, sandTopY, WALL_Z], [0.6, sandTopY, WALL_Z], [0.6, sandTopY, 0.452], [-0.6, sandTopY, 0.452]], 0xf0a64a);
 
-    var spot = new THREE.SpotLight(0xffd9a0, 1.6, 4, 0.37, 0.55, 1.2);
-    spot.position.copy(projPos); spot.target.position.set(0, sandTopY, 0); scene.add(spot); scene.add(spot.target);
+    var spot = new THREE.SpotLight(0xffd9a0, 1.6, 4, 0.4, 0.55, 1.2);
+    spot.position.copy(lensPos); spot.target.position.set(0, sandTopY, 0.01); scene.add(spot); scene.add(spot.target);
 
     // переключатель крепления
-    var goal = { ty: 0.95, r: 3.6, phi: 1.12 };
-    var mounts = { stand: gStand, c2: gC2, c3: gC3 };
-    var camGoal = { stand: { ty: 0.95, r: 3.6, phi: 1.12 }, c2: { ty: 1.0, r: 3.7, phi: 1.12 }, c3: { ty: 1.4, r: 5.0, phi: 1.3 } };
+    var goal = { ty: 1.0, r: 3.6, phi: 1.15 };
+    var mounts = { wall: gWall, stand: gStand };
+    var camGoal = { wall: { ty: 1.0, r: 3.6, phi: 1.15, theta: 0.55 }, stand: { ty: 0.95, r: 3.6, phi: 1.12 } };
     var dimsText = {
-      stand: "напольная стойка ≈ 2,0 м<br>датчик 1,45 м · проектор 1,9 м от пола<br>ящик на полу: борт 0,28 м · песок ≈ 0,15 м",
-      c2: "потолок 2,0 м<br>проектор — на потолке, обычный объектив<br>датчик — на опуске 0,5 м · низ ≈ 1,4 м",
-      c3: "потолок 3,0 м<br>штанга 1,5 м с растяжками<br>проектор на хомуте 1,9 м · датчик внизу 1,45 м"
+      wall: "крепление к стене: рейка 40×40 + Г-консоль<br>датчик 1,35 м · объектив проектора 1,95 м от пола<br>ящик у стены: центр 413 мм от стены · песок 0,15 м",
+      stand: "напольная стойка ≈ 2,0 м — запасной вариант<br>датчик 1,35 м · объектив проектора 1,95 м от пола<br>ящик на полу: борт 0,25 м · песок ≈ 0,15 м"
     };
     var dimsEl = stage.querySelector(".dims");
     function setMount(m) {
       Object.keys(mounts).forEach(function (k) { mounts[k].visible = (k === m); });
       goal.ty = camGoal[m].ty; goal.r = camGoal[m].r; goal.phi = camGoal[m].phi;
+      if (camGoal[m].theta !== undefined) orbit.theta = camGoal[m].theta;
       if (dimsEl) dimsEl.innerHTML = dimsText[m];
     }
     var mountBtns = Array.prototype.slice.call(document.querySelectorAll("#mountTools [data-mount]"));
     mountBtns.forEach(function (b) { b.addEventListener("click", function () { mountBtns.forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); }); setMount(b.getAttribute("data-mount")); }); });
-    setMount("stand");
+    setMount("wall");
 
     var tS = document.getElementById("tSensor"), tP = document.getElementById("tProj"), tL = document.getElementById("tLight"), tK = document.getElementById("tKid"), tSpin = document.getElementById("tSpin");
     if (reduceMotion) { tSpin.checked = false; }
